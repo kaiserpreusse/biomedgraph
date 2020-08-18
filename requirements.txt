@@ -1,0 +1,7 @@
+graphio>=0.0.12
+pandas
+xlrd
+requests
+ftputil
+psycopg2-binary
+pronto
