@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-setup(name='biodatagraph',
+setup(name='biomedgraph',
       version='0.0.1',
       description='Download data from biomedical databases and store in Neo4j.',
       url='https://github.com/kaiserpreusse/biomedgraph',
