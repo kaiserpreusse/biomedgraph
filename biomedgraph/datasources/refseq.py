@@ -70,21 +70,20 @@ class Refseq(ManyVersionsRemoteDataSource):
 
         return cat_path
 
-    def download(self, instance, version):
+    def download_function(self, instance, version):
         """
         Download the catalogue file containing all RefSeq ids and the gene transcript mapping file.
         """
 
-        if self.version_downloadable(version):
-            cat_file_name = 'RefSeq-release{0}.catalog.gz'.format(version)
-            downloader.download_file_to_dir(
-                posixpath.join(self.release_path(version), cat_file_name), instance.process_instance_dir
-            )
+        cat_file_name = 'RefSeq-release{0}.catalog.gz'.format(version)
+        downloader.download_file_to_dir(
+            posixpath.join(self.release_path(version), cat_file_name), instance.process_instance_dir
+        )
 
-            filename = 'release{0}.accession2geneid.gz'.format(version)
-            downloader.download_file_to_dir(
-                posixpath.join(self.release_path(version), filename), instance.process_instance_dir
-            )
+        filename = 'release{0}.accession2geneid.gz'.format(version)
+        downloader.download_file_to_dir(
+            posixpath.join(self.release_path(version), filename), instance.process_instance_dir
+        )
 
     @staticmethod
     def get_catalog_file_path(instance):
