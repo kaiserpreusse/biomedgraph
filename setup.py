@@ -10,7 +10,7 @@ setup(name='biodatagraph',
       packages=find_packages(),
       install_requires=[
           'urllib3<1.25,>=1.23', 'pandas', 'xlrd', 'requests', 'ftputil',
-          'psycopg2-binary', 'pronto', 'graphio', 'datacroaker'
+          'psycopg2-binary', 'pronto', 'graphio', 'datacroaker', 'elderberry'
       ],
       keywords=['NEO4J', 'Biology'],
       zip_safe=False,
