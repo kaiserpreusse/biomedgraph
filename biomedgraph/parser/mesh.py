@@ -29,10 +29,6 @@ class MeshParser(ReturnParser):
         self.concept_related_concept = RelationshipSet('RELATED', ['MeshConcept'], ['MeshConcept'], ['sid'], ['sid'])
         self.concept_related_concept.unique = True
 
-        self.object_sets = [self.descriptor, self.qualifier, self.concept, self.term, self.descriptor_allowed_qualifier,
-                            self.descriptor_has_concept, self.concept_has_term, self.concept_related_concept]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run()
 

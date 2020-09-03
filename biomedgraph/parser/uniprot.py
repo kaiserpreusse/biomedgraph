@@ -45,10 +45,6 @@ class UniprotKnowledgebaseParser(ReturnParser):
         self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'])
         self.protein_maps_protein = RelationshipSet('MAPS', ['Protein'], ['Protein'], ['sid'], ['sid'])
 
-        self.object_sets = [self.proteins, self.protein_primary_protein, self.transcript_codes_protein,
-                            self.protein_maps_protein]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 

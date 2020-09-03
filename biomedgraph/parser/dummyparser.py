@@ -20,9 +20,6 @@ class DummyParser(ReturnParser):
 
         self.dummy_knows_fummy = RelationshipSet('KNOWS', ['Dummy'], ['Fummy'], ['sid'], ['sid'])
 
-        self.object_sets = [self.dummy_nodes, self.fummy_nodes, self.dummy_knows_fummy]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 

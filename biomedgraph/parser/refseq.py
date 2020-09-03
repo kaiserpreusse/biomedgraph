@@ -37,9 +37,6 @@ class RefseqEntityParser(ReturnParser):
         self.transcripts = NodeSet(['Transcript'], merge_keys=['sid'])
         self.proteins = NodeSet(['Protein'], merge_keys=['sid'])
 
-        self.object_sets = [self.transcripts, self.proteins]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 

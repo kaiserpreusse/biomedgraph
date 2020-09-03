@@ -27,8 +27,6 @@ class NcbiHomoloGeneParser(ReturnParser):
         # output data
         self.gene_homolog_gene = RelationshipSet('HOMOLOG', ['Gene'], ['Gene'],
                                                  ['sid'], ['sid'])
-        self.object_sets = [self.gene_homolog_gene]
-        self.container.add_all(self.object_sets)
 
     def run_with_mounted_arguments(self):
         self.run()

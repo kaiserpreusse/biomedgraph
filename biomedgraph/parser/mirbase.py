@@ -17,10 +17,6 @@ class MirbaseParser(ReturnParser):
         self.transcript_codes_precursor = RelationshipSet('IS', ['Transcript'], ['PrecursorMirna'], ['sid'], ['sid'])
         self.gene_is_precursor = RelationshipSet('IS', ['Gene'], ['PrecursorMirna'], ['sid'], ['sid'])
 
-        self.object_sets = [self.mature_mirna, self.precursor_mirna, self.precursor_codes_mature,
-                            self.transcript_codes_precursor, self.gene_is_precursor]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run()
 

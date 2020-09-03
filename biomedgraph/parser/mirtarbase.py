@@ -21,9 +21,6 @@ class MirtarbaseParser(ReturnParser):
         # RelationshipSets
         self.mirna_targets_gene = RelationshipSet('TARGETS', ['Mirna'], ['Gene'], ['name'], ['sid'])
 
-        self.object_sets = [self.mirna_targets_gene]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run()
 

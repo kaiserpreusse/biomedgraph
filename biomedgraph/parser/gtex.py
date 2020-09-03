@@ -30,12 +30,6 @@ class GtexMetadataParser(ReturnParser):
                                                              ['name'])
         self.tissue_parent_detailed_tissue.unique = True
 
-        self.object_sets = [
-            self.tissues, self.detailed_tissues, self.sample, self.sample_measures_tissue,
-            self.sample_measures_detailed_tissue, self.tissue_parent_detailed_tissue
-        ]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run()
 

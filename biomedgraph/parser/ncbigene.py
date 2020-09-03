@@ -25,9 +25,6 @@ class NcbiGeneParser(ReturnParser):
                                                              ['sid', 'taxid'], ['sid', 'taxid'])
         self.gene_maps_genesymbol = RelationshipSet('MAPS', ['Gene'], ['GeneSymbol'], ['sid'], ['sid', 'taxid'])
 
-        self.object_sets = [self.genes, self.genesymbols, self.genesymbol_synonym_genesymbol, self.gene_maps_genesymbol]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 

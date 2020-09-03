@@ -44,13 +44,6 @@ class OboFoundryParser(ReturnParser):
         ## additional relationships defined in the ontology
         self.term_ontorel_term = RelationshipSet('ONTOREL', ['Term'], ['Term'], ['sid'], ['sid'])
 
-        self.object_sets = [self.ontologies, self.terms, self.subsets, self.synonym_terms,
-                            self.subset_of_ontology, self.term_in_ontology, self.term_in_subset,
-                            self.term_is_a_term, self.term_synonym_term,
-                            self.term_ontorel_term]
-
-        self.container.add_all(self.object_sets)
-
     @property
     def obo_instance(self):
         return self.get_instance_by_name('OboFoundry')

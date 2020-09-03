@@ -31,9 +31,6 @@ class EnsemblEntityParser(ReturnParser):
         self.gene_codes_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript'], ['sid'], ['sid'])
         self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'])
 
-        self.object_sets = [self.genes, self.transcripts, self.proteins, self.gene_codes_transcript, self.transcript_codes_protein]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 

@@ -17,9 +17,6 @@ class MirdbParser(ReturnParser):
         # RelationshipSets
         self.mirna_targets_transcript = RelationshipSet('TARGETS', ['Mirna'], ['Transcript'], ['name'], ['sid'])
 
-        self.object_sets = [self.mirna_targets_transcript]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 

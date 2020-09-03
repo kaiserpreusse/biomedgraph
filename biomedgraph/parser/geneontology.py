@@ -85,9 +85,6 @@ class GeneOntologyAssociationParser(ReturnParser):
         # RelationshipSets
         self.protein_associates_goterm = RelationshipSet('ASSOCIATION', ['Protein'], ['Term'], ['sid'], ['sid'])
 
-        self.object_sets = [self.protein_associates_goterm]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 

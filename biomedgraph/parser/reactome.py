@@ -23,9 +23,6 @@ class ReactomePathwayParser(ReturnParser):
         # RelationshipSets
         self.pathway_child_pathway = RelationshipSet('CHILD', ['Pathway'], ['Pathway'], ['sid'], ['sid'])
 
-        self.object_sets = [self.pathways, self.pathway_child_pathway]
-        self.container.add_all(self.object_sets)
-
         self._taxtranslator = None
 
     @property

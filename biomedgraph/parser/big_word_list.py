@@ -16,9 +16,6 @@ class BigWordListParser(ReturnParser):
         # NodeSets
         self.words = NodeSet(['Word'], merge_keys=['value'])
 
-        self.object_sets = [self.words]
-        self.container.add_all(self.object_sets)
-
     def run_with_mounted_arguments(self):
         self.run()
 
