@@ -15,6 +15,7 @@ from .geneontology import GeneOntology
 from .gtex import Gtex
 from .hgnc import HGNC
 from .obofoundry import OboFoundry
+from .swisslipids import SwissLipids
 
 import sys
 import inspect

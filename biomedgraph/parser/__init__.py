@@ -15,6 +15,7 @@ from .geneontology import GeneOntologyAssociationParser
 from .gtex import GtexMetadataParser, GtexDataParser
 from .hgnc import HGNCParser
 from .obofoundry import OboFoundryParser
+from .swisslipids import SwissLipidsParser
 
 from elderberry import Parser
 import sys
