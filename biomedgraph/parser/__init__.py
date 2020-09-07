@@ -16,6 +16,7 @@ from .gtex import GtexMetadataParser, GtexDataParser
 from .hgnc import HGNCParser
 from .obofoundry import OboFoundryParser
 from .swisslipids import SwissLipidsParser
+from .chebi import ChebiParser
 
 from elderberry import Parser
 import sys

@@ -19,6 +19,7 @@ class SwissLipidsParser(ReturnParser):
         self.lipid_fromclass_lipid = RelationshipSet('FROM_LIPID_CLASS', ['Lipid'], ['Lipid'], ['sid'], ['sid'])
         self.lipid_parent_lipid = RelationshipSet('HAS_PARENT', ['Lipid'], ['Lipid'], ['sid'], ['sid'])
         self.lipid_component_lipid = RelationshipSet('HAS_COMPONENT', ['Lipid'], ['Lipid'], ['sid'], ['sid'])
+        self.lipid_maps_metabolite = RelationshipSet('MAPS', ['Lipid'], ['Metabolite'], ['sid'], ['sid'])
 
     def run_with_mounted_arguments(self):
         self.run()
@@ -93,6 +94,8 @@ class SwissLipidsParser(ReturnParser):
 
             for l in f:
                 flds = l.strip().split('\t')
+
+
                 lipid_sid = flds[0]
 
                 # (Lipid) node
@@ -104,6 +107,10 @@ class SwissLipidsParser(ReturnParser):
                     fld = fld.strip()
                     if fld:
                         props[header_cypher_safe[i]] = fld
+                #
+                # print(
+                #     dict(zip(header, flds))
+                # )
 
                 self.lipids.add_node(props)
 
@@ -133,3 +140,19 @@ class SwissLipidsParser(ReturnParser):
                     # some empty fields contain extra spaces
                     except ValueError:
                         pass
+
+                # (Lipid)-[MAPS]-(Metabolite)
+                #TODO chebi id is not properly parsed?
+
+                try:
+                    chebi_id = flds[24].strip()
+                    #print(len(flds))
+                    #print(flds[24])
+
+                    if chebi_id:
+                        # print(chebi_id)
+                        self.lipid_maps_metabolite.add_relationship(
+                            {'sid': lipid_sid}, {'sid': chebi_id}, {'source': 'swisslipids'}
+                        )
+                except IndexError:
+                    pass

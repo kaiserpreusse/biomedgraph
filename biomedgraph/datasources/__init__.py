@@ -16,6 +16,7 @@ from .gtex import Gtex
 from .hgnc import HGNC
 from .obofoundry import OboFoundry
 from .swisslipids import SwissLipids
+from .chebi import Chebi
 
 import sys
 import inspect
