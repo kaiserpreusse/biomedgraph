@@ -38,7 +38,7 @@ class OboFoundry(RollingReleaseRemoteDataSource):
                         ontology_target_dir = os.path.join(target_dir, ontology_id)
                         try:
                             downloader.download_file_to_dir(product['ontology_purl'], ontology_target_dir)
-                        except ValueError as e:
+                        except Exception as e:
                             log.error(f"Can't download {product['ontology_purl']}, continue with next files.")
                             log.error(e)
 
