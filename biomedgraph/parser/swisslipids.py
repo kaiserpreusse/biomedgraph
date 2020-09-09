@@ -77,7 +77,7 @@ class SwissLipidsParser(ReturnParser):
 
         # get header
         header = None
-        log.debug(lipids_file)
+
         with gzip.open(lipids_file, 'rt') as f:
             header = next(f)
         header = header.strip().split('\t')
@@ -159,7 +159,7 @@ class SwissLipidsParser(ReturnParser):
                     hmdb_id = flds[26].strip()
 
                     if hmdb_id:
-                        print(hmdb_id)
+
                         self.lipid_maps_metabolite.add_relationship(
                             {'sid': lipid_sid}, {'sid': hmdb_id}, {'source': 'swisslipids'}
                         )
