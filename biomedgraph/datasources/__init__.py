@@ -17,6 +17,7 @@ from .hgnc import HGNC
 from .obofoundry import OboFoundry
 from .swisslipids import SwissLipids
 from .chebi import Chebi
+from .hmdb import Hmdb
 
 import sys
 import inspect

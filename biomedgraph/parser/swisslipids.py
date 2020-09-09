@@ -20,6 +20,7 @@ class SwissLipidsParser(ReturnParser):
         self.lipid_parent_lipid = RelationshipSet('HAS_PARENT', ['Lipid'], ['Lipid'], ['sid'], ['sid'])
         self.lipid_component_lipid = RelationshipSet('HAS_COMPONENT', ['Lipid'], ['Lipid'], ['sid'], ['sid'])
         self.lipid_maps_metabolite = RelationshipSet('MAPS', ['Lipid'], ['Metabolite'], ['sid'], ['sid'])
+        self.lipid_associates_protein = RelationshipSet('HAS_ASSOCIATION', ['Lipid'], ['Protein'], ['sid'], ['sid'])
 
     def run_with_mounted_arguments(self):
         self.run()
@@ -29,6 +30,7 @@ class SwissLipidsParser(ReturnParser):
         swisslipids_instance = self.get_instance_by_name('SwissLipids')
 
         self.get_lipids(swisslipids_instance)
+        self.get_lipid_to_protein(swisslipids_instance)
 
     def get_lipids(self, instance):
         """
@@ -99,7 +101,7 @@ class SwissLipidsParser(ReturnParser):
                 lipid_sid = flds[0]
 
                 # (Lipid) node
-                props = {}
+                props = {'source': 'swisslipids'}
                 props['sid'] = lipid_sid
 
                 # add all properties, some are empty but contain whitespaces
@@ -142,17 +144,88 @@ class SwissLipidsParser(ReturnParser):
                         pass
 
                 # (Lipid)-[MAPS]-(Metabolite)
-                #TODO chebi id is not properly parsed?
-
                 try:
                     chebi_id = flds[24].strip()
-                    #print(len(flds))
-                    #print(flds[24])
 
                     if chebi_id:
-                        # print(chebi_id)
                         self.lipid_maps_metabolite.add_relationship(
                             {'sid': lipid_sid}, {'sid': chebi_id}, {'source': 'swisslipids'}
                         )
                 except IndexError:
                     pass
+
+                try:
+                    hmdb_id = flds[26].strip()
+
+                    if hmdb_id:
+                        print(hmdb_id)
+                        self.lipid_maps_metabolite.add_relationship(
+                            {'sid': lipid_sid}, {'sid': hmdb_id}, {'source': 'swisslipids'}
+                        )
+                except IndexError:
+                    pass
+
+    def get_lipid_to_protein(self, instance):
+        """
+        File: lipids2uniprot.tsv.gz
+
+        Columns:
+            - difficult to select column names, use index
+
+
+        0	metabolite id
+        1	UniprotKB IDs
+        2	level
+        3	metabolite name
+        4	abbreviations
+        5	synonyms
+        6	lipid class
+        7	components
+        8	PMIDs
+        9	SMILES (pH7.3)
+        10	InChI (pH7.3)
+        11	InChI key (pH7.3)
+        12	Formula (pH7.3)
+        13	Mass (pH7.3)
+        14	Charge (pH7.3)
+        15	Exact Mass (neutral form)
+        16	Exact m/z of [M.]+
+        17	Exact m/z of [M+H]+
+        18	Exact m/z of [M+K]+Exact m/z of [M+Na]+
+        19	Exact m/z of [M+Li]+
+        20	Exact m/z of [M+NH4]+
+        21	Exact m/z of [M-H]-
+        22	Exact m/z of [M+Cl]-
+        23	Exact m/z of [M+OAc]-
+        24	ChEBI
+        25	LipidMaps
+        26	HMDB
+        27	Mapping level
+
+        :param instance: The datasource instance.
+        """
+        lipids_2_protein_file = instance.get_file('lipids2uniprot.tsv.gz')
+
+
+        # iterate file
+        with gzip.open(lipids_2_protein_file, 'rt', errors="replace") as f:
+            next(f)
+            for l in f:
+                flds = l.strip().split('\t')
+                swisslipids_id = flds[0].strip()
+                mapping_level = flds[27].strip()
+
+                # collect UniProt IDs from uniprot fields, contains a '|' separated list
+                # G5EC84 | O18037 | P91079 | Q09517 | Q10916 | Q20735 | Q21054 | Q23498 | Q9U3D4
+                # note: not always formatted with space: ' | '
+                uniprot_id_string = flds[1]
+                uniprot_ids = set()
+                for u in uniprot_id_string.split('|'):
+                    u = u.strip()
+                    if u:
+                        uniprot_ids.add(u)
+
+                for up in uniprot_ids:
+                    self.lipid_associates_protein.add_relationship(
+                        {'sid': swisslipids_id}, {'sid': up}, {'source': 'swisslipids', 'level': mapping_level}
+                    )
