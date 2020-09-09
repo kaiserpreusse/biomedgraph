@@ -77,6 +77,7 @@ class SwissLipidsParser(ReturnParser):
 
         # get header
         header = None
+        log.debug(lipids_file)
         with gzip.open(lipids_file, 'rt') as f:
             header = next(f)
         header = header.strip().split('\t')
