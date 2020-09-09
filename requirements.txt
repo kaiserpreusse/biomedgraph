@@ -5,3 +5,4 @@ requests
 ftputil
 psycopg2-binary
 pronto
+lxml
