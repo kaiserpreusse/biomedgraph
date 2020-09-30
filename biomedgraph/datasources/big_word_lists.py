@@ -41,7 +41,7 @@ class BigWordList(SingleVersionRemoteDataSource):
         Download latest version.
         """
         #for i in range(3, 13):
-        for i in range(3, 5):
+        for i in range(3, 13):
             download_url = BASE_URL.format(i)
             zip_file_path = downloader.download_file_to_dir(download_url, instance.process_instance_dir)
             unzip(zip_file_path)
