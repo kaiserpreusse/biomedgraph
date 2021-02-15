@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import logging
 
 from graphpipeline.parser import ReturnParser
-from datacroaker import DataSourceVersion
+from graphpipeline.datasource import DataSourceVersion
 from graphio import NodeSet, RelationshipSet
 
 log = logging.getLogger(__name__)
