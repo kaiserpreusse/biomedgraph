@@ -1,7 +1,7 @@
 import logging
 
-from datacroaker import RollingReleaseRemoteDataSource
-from datacroaker.helper import downloader
+from graphpipeline.datasource import RollingReleaseRemoteDataSource
+from graphpipeline.datasource.helper import downloader
 
 log = logging.getLogger(__name__)
 

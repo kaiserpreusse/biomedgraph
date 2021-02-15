@@ -1,7 +1,7 @@
-from datacroaker import SingleVersionRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
-from datacroaker.helper.filehandler import unzip
+from graphpipeline.datasource import SingleVersionRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
+from graphpipeline.datasource.helper.filehandler import unzip
 
 
 class Hmdb(SingleVersionRemoteDataSource):

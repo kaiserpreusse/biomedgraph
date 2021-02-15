@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import logging
 
-from elderberry import ReturnParser
+from graphpipeline.parser import ReturnParser
 from datacroaker import DataSourceVersion
 from graphio import NodeSet, RelationshipSet
 

@@ -21,7 +21,7 @@ from .hmdb import Hmdb
 
 import sys
 import inspect
-from datacroaker import BaseDataSource
+from graphpipeline.datasource import BaseDataSource
 
 current_module = sys.modules[__name__]
 

@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from datacroaker import SingleVersionRemoteDataSource
-from datacroaker import DataSourceInstance
-from datacroaker.helper import downloader
+from graphpipeline.datasource import SingleVersionRemoteDataSource
+from graphpipeline.datasource import DataSourceInstance
+from graphpipeline.datasource.helper import downloader
 
 
 class NcbiHomoloGene(SingleVersionRemoteDataSource):

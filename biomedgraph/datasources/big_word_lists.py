@@ -10,11 +10,11 @@ He builds intersections from public word lists. You can download combined files 
 from datetime import datetime, date
 from uuid import uuid4
 
-from datacroaker import SingleVersionRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
-from datacroaker.helper.filehandler import unzip
-from datacroaker import DataSourceInstance
+from graphpipeline.datasource import SingleVersionRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
+from graphpipeline.datasource.helper.filehandler import unzip
+from graphpipeline.datasource import DataSourceInstance
 
 
 BASE_URL = "https://www.keithv.com/software/wlist/wlist_match{}.zip"

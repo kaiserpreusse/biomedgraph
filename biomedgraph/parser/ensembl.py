@@ -2,8 +2,8 @@ import gzip
 import logging
 from uuid import uuid4
 
-from biomedgraph.parser.helper.gff import GffReader
-from elderberry import ReturnParser
+from graphpipeline.parser import GffReader
+from graphpipeline.parser import ReturnParser
 from biomedgraph.datasources.ensembl import Ensembl
 from graphio import NodeSet, RelationshipSet
 

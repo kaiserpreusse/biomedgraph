@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from datacroaker import ManyVersionsRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
-from datacroaker import DataSourceInstance
+from graphpipeline.datasource import ManyVersionsRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
+from graphpipeline.datasource import DataSourceInstance
 
 VERSION_2_URL = {'6': 'http://mirdb.org/download/miRDB_v6.0_prediction_result.txt.gz',
                  '5': 'http://mirdb.org/download/miRDB_v5.0_prediction_result.txt.gz'}

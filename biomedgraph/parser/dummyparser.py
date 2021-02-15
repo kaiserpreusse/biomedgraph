@@ -1,7 +1,7 @@
 import string
 from random import randint
 
-from elderberry import ReturnParser
+from graphpipeline.parser import ReturnParser
 from graphio import NodeSet, RelationshipSet
 
 

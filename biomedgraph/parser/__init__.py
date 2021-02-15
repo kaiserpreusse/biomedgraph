@@ -19,7 +19,7 @@ from .swisslipids import SwissLipidsParser
 from .chebi import ChebiParser
 from .hmdb import HmdbParser
 
-from elderberry import Parser
+from graphpipeline.parser import Parser
 import sys
 import inspect
 

@@ -4,10 +4,10 @@ from datetime import datetime
 import requests
 import logging
 
-from datacroaker import ManyVersionsRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
-from datacroaker import DataSourceInstance
+from graphpipeline.datasource import ManyVersionsRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
+from graphpipeline.datasource import DataSourceInstance
 
 log = logging.getLogger(__name__)
 

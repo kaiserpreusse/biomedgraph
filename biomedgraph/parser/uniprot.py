@@ -1,8 +1,8 @@
 import gzip
 import logging
 
-from elderberry import ReturnParser
-from biomedgraph.parser.helper import embl
+from graphpipeline.parser import ReturnParser
+from graphpipeline.parser import EMBLReaderUniProt
 from graphio import NodeSet, RelationshipSet
 
 TAXID_OS_NAME = {'9606': 'Human',
@@ -67,7 +67,7 @@ class UniprotKnowledgebaseParser(ReturnParser):
         for kb_file in knowledgebase_files:
             log.debug(f"Parsing {kb_file}")
             with gzip.open(kb_file, 'rt') as f:
-                up_parser = embl.UniProt(f)
+                up_parser = EMBLReaderUniProt(f)
 
                 for record in up_parser.records:
                     # check taxon

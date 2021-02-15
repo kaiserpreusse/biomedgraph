@@ -1,9 +1,9 @@
 from datetime import datetime, date
 
-from datacroaker import SingleVersionRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
-from datacroaker import DataSourceInstance
+from graphpipeline.datasource import SingleVersionRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
+from graphpipeline.datasource import DataSourceInstance
 
 
 class Gtex(SingleVersionRemoteDataSource):

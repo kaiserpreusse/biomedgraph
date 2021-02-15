@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from datacroaker import RollingReleaseRemoteDataSource
-from datacroaker import DataSourceInstance
-from datacroaker.helper import downloader
+from graphpipeline.datasource import RollingReleaseRemoteDataSource
+from graphpipeline.datasource import DataSourceInstance
+from graphpipeline.datasource.helper import downloader
 
 
 class Reactome(RollingReleaseRemoteDataSource):

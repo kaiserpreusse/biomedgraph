@@ -4,7 +4,7 @@ import logging
 import json
 import re
 
-from elderberry import ReturnParser
+from graphpipeline.parser import ReturnParser
 from graphio import NodeSet, RelationshipSet
 
 from biomedgraph.parser.helper.obo import clean_obo_file

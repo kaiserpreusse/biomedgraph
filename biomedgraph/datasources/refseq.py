@@ -1,9 +1,9 @@
 import posixpath
 import os
 
-from datacroaker import ManyVersionsRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
+from graphpipeline.datasource import ManyVersionsRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
 
 
 class Refseq(ManyVersionsRemoteDataSource):

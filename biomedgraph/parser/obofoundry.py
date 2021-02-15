@@ -4,7 +4,7 @@ import logging
 import json
 import re
 
-from elderberry import ReturnParser
+from graphpipeline.parser import ReturnParser
 from graphio import NodeSet, RelationshipSet
 
 log = logging.getLogger(__name__)

@@ -1,5 +1,5 @@
 import gzip
-from elderberry import ReturnParser
+from graphpipeline.parser import ReturnParser
 from graphio import NodeSet, RelationshipSet
 
 TAXID_2_MIRPREFIX = {'9606': 'hsa',

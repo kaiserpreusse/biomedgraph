@@ -1,7 +1,7 @@
 import string
 import os
 
-from datacroaker import RollingReleaseRemoteDataSource
+from graphpipeline.datasource import RollingReleaseRemoteDataSource
 
 
 class Dummy(RollingReleaseRemoteDataSource):

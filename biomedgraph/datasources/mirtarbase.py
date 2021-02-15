@@ -1,6 +1,6 @@
-from datacroaker import SingleVersionRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
+from graphpipeline.datasource import SingleVersionRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
 
 FILE_URL_FORMAT_VERSION = 'http://mirtarbase.mbc.nctu.edu.tw/cache/download/{}/miRTarBase_MTI.xlsx'
 

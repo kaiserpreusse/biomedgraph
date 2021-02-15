@@ -1,6 +1,6 @@
 from itertools import combinations
 
-from elderberry import ReturnParser
+from graphpipeline.parser import ReturnParser
 from graphio import RelationshipSet
 
 

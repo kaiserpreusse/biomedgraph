@@ -1,8 +1,8 @@
 import logging
 
-from datacroaker import RollingReleaseRemoteDataSource
-from datacroaker.helper import downloader
-from datacroaker.helper.filehandler import unzip
+from graphpipeline.datasource import RollingReleaseRemoteDataSource
+from graphpipeline.datasource.helper import downloader
+from graphpipeline.datasource.helper.filehandler import unzip
 
 log = logging.getLogger(__name__)
 

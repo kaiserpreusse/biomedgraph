@@ -1,5 +1,5 @@
 import logging
-from elderberry import ReturnParser
+from graphpipeline.parser import ReturnParser
 from graphio import NodeSet, RelationshipSet
 
 log = logging.getLogger(__name__)

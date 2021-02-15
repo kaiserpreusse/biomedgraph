@@ -2,10 +2,10 @@ from datetime import datetime, date
 import posixpath
 from xml.etree import ElementTree
 
-from datacroaker import SingleVersionRemoteDataSource
-from datacroaker import DataSourceVersion
-from datacroaker.helper import downloader
-from datacroaker import DataSourceInstance
+from graphpipeline.datasource import SingleVersionRemoteDataSource
+from graphpipeline.datasource import DataSourceVersion
+from graphpipeline.datasource.helper import downloader
+from graphpipeline.datasource import DataSourceInstance
 
 TAXID_KB_FILE_NAME = {
     '9606': 'human',
