@@ -1,7 +1,12 @@
 from setuptools import setup, find_packages
 
 setup(name='biomedgraph',
-      version='0.0.1',
+      use_scm_version={
+          "root": ".",
+          "relative_to": __file__,
+          "local_scheme": "node-and-timestamp"
+      },
+      setup_requires=['setuptools_scm'],
       description='Download data from biomedical databases and store in Neo4j.',
       url='https://github.com/kaiserpreusse/biomedgraph',
       author='Martin Preusse',
