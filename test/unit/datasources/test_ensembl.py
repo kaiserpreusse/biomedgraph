@@ -1,7 +1,7 @@
 import pytest
 import pprint
 
-from biodatagraph.datasources import Ensembl
+from biomedgraph.datasources import Ensembl
 
 
 def test_taxid_name_mapping():
