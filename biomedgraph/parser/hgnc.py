@@ -5,14 +5,14 @@ from graphio import NodeSet, RelationshipSet
 class HGNCParser(ReturnParser):
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
 
         :param ncbigene_instance: NcbiGene Instance
         :type ncbigene_instance: DataSourceInstance
         :param taxid:
         """
-        super(HGNCParser, self).__init__(root_dir)
+        super(HGNCParser, self).__init__()
 
         # output data
         self.genes = NodeSet(['Gene'], merge_keys=['sid'])

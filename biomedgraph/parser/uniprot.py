@@ -27,12 +27,12 @@ class UniprotKnowledgebaseParser(ReturnParser):
 
     The mapping parser returns transcript-protein relationships for both ENSEMBL and RefSeq.
     """
-    def __init__(self, root_dir):
+    def __init__(self):
         """
         :param uniprot_instance: The Uniprot instance
         :param taxid: The taxid
         """
-        super(UniprotKnowledgebaseParser, self).__init__(root_dir)
+        super(UniprotKnowledgebaseParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']

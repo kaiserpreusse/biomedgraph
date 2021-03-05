@@ -13,11 +13,11 @@ log = logging.getLogger(__name__)
 class EnsemblEntityParser(ReturnParser):
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
         :param ensembl_instance: The ENSEMBL DataSource instance.
         """
-        super(EnsemblEntityParser, self).__init__(root_dir)
+        super(EnsemblEntityParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']
@@ -105,11 +105,11 @@ class EnsemblEntityParser(ReturnParser):
 class EnsemblLocusParser(ReturnParser):
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
         :param ensembl_instance: The ENSEMBL DataSource instance.
         """
-        super(EnsemblLocusParser, self).__init__(root_dir)
+        super(EnsemblLocusParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']
@@ -184,9 +184,9 @@ class EnsemblMappingParser(ReturnParser):
     """
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
 
-        super(EnsemblMappingParser, self).__init__(root_dir)
+        super(EnsemblMappingParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']

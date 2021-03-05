@@ -13,8 +13,8 @@ log = logging.getLogger(__name__)
 
 class ChebiParser(ReturnParser):
 
-    def __init__(self, root_dir):
-        super(ChebiParser, self).__init__(root_dir)
+    def __init__(self):
+        super(ChebiParser, self).__init__()
 
         # NodeSets
         self.metabolites = NodeSet(['Metabolite'], merge_keys=['sid'])

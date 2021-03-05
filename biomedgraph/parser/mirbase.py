@@ -6,8 +6,8 @@ from graphio import NodeSet, RelationshipSet
 
 class MirbaseParser(ReturnParser):
 
-    def __init__(self, root_dir):
-        super(MirbaseParser, self).__init__(root_dir)
+    def __init__(self):
+        super(MirbaseParser, self).__init__()
 
         # NodeSets
         self.precursor_mirna = NodeSet(['PrecursorMirna'], merge_keys=['sid'])

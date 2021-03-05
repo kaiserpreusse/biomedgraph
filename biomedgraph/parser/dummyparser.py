@@ -8,8 +8,8 @@ from graphio import NodeSet, RelationshipSet
 class DummyParser(ReturnParser):
 
 
-    def __init__(self, root_dir):
-        super(DummyParser, self).__init__(root_dir)
+    def __init__(self):
+        super(DummyParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']

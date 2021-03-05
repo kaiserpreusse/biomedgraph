@@ -10,8 +10,8 @@ log = logging.getLogger(__name__)
 
 class MeshParser(ReturnParser):
 
-    def __init__(self, root_dir):
-        super(MeshParser, self).__init__(root_dir)
+    def __init__(self):
+        super(MeshParser, self).__init__()
 
         # NodeSets
         self.descriptor = NodeSet(['MeshDescriptor'], merge_keys=['sid'])

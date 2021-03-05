@@ -21,8 +21,8 @@ class NcbiHomoloGeneParser(ReturnParser):
 
     """
 
-    def __init__(self, root_dir):
-        super(NcbiHomoloGeneParser, self).__init__(root_dir)
+    def __init__(self):
+        super(NcbiHomoloGeneParser, self).__init__()
 
         # output data
         self.gene_homolog_gene = RelationshipSet('HOMOLOG', ['Gene'], ['Gene'],

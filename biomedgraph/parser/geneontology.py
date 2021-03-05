@@ -77,8 +77,8 @@ class GeneOntologyAssociationParser(ReturnParser):
     """
 
 
-    def __init__(self, root_dir):
-        super(GeneOntologyAssociationParser, self).__init__(root_dir)
+    def __init__(self):
+        super(GeneOntologyAssociationParser, self).__init__()
 
         self.arguments = ['taxid']
 

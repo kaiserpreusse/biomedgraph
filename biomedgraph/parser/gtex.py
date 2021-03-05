@@ -10,13 +10,13 @@ log = logging.getLogger(__name__)
 class GtexMetadataParser(ReturnParser):
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
 
         :param mesh_instance: NcbiGene Instance
         :type mesh_instance: DataSourceInstance
         """
-        super(GtexMetadataParser, self).__init__(root_dir)
+        super(GtexMetadataParser, self).__init__()
 
         # NodeSets
         self.tissues = NodeSet(['GtexTissue'], merge_keys=['name'])
@@ -80,13 +80,13 @@ class GtexMetadataParser(ReturnParser):
 class GtexDataParser(ReturnParser):
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
 
         :param mesh_instance: NcbiGene Instance
         :type mesh_instance: DataSourceInstance
         """
-        super(GtexDataParser, self).__init__(root_dir)
+        super(GtexDataParser, self).__init__()
 
         self.gene_expressed_tissue = RelationshipSet('EXPRESSED', ['Gene'], ['GtexDetailedTissue'], ['sid'], ['name'])
 

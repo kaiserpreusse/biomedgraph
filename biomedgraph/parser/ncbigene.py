@@ -1,35 +1,41 @@
 import gzip
 from graphpipeline.parser import ReturnParser
 from graphio import NodeSet, RelationshipSet
+import logging
+
 
 TAXID_SPECIFIC_GENEINFO = {
     '9606': 'Homo_sapiens.gene_info.gz',
     '10090': 'Mus_musculus.gene_info.gz'
 }
 
+log = logging.getLogger(__name__)
 
 class NcbiGeneParser(ReturnParser):
 
-    def __init__(self, root_dir):
+    def __init__(self):
 
-        super(NcbiGeneParser, self).__init__(root_dir)
+        super(NcbiGeneParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']
 
         # output data
+        # both gene IDs and GeneSymbols have the label 'Gene'
+        # two different NodeSets are used because only the GeneSymbol nodes need taxid for uniqueness
         self.genes = NodeSet(['Gene'], merge_keys=['sid'])
-
-        self.genesymbols = NodeSet(['GeneSymbol'], merge_keys=['sid', 'taxid'])
-        self.genesymbol_synonym_genesymbol = RelationshipSet('SYNONYM', ['GeneSymbol'], ['GeneSymbol'],
+        self.genesymbols = NodeSet(['Gene'], merge_keys=['sid', 'taxid'])
+        self.genesymbol_synonym_genesymbol = RelationshipSet('SYNONYM', ['Gene'], ['Gene'],
                                                              ['sid', 'taxid'], ['sid', 'taxid'])
-        self.gene_maps_genesymbol = RelationshipSet('MAPS', ['Gene'], ['GeneSymbol'], ['sid'], ['sid', 'taxid'])
+        self.gene_maps_genesymbol = RelationshipSet('MAPS', ['Gene'], ['Gene'], ['sid'], ['sid', 'taxid'])
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 
     def run(self, taxid):
+        log.info(f"Run {self.__class__.__name__}")
         ncbigene_instance = self.get_instance_by_name('NcbiGene')
+        print(f'instance: {ncbigene_instance}')
 
         # get org specific gene_info file if available
         if taxid in TAXID_SPECIFIC_GENEINFO:
@@ -114,14 +120,14 @@ class NcbiGeneParser(ReturnParser):
 
 class NcbiGeneOrthologParser(ReturnParser):
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
 
         :param ncbigene_instance: NcbiGene Instance
         :type ncbigene_instance: DataSourceInstance
         :param taxid:
         """
-        super(NcbiGeneOrthologParser, self).__init__(root_dir)
+        super(NcbiGeneOrthologParser, self).__init__()
 
         self.gene_ortholog_gene = RelationshipSet('ORTHOLOG', ['Gene'], ['Gene'], ['sid'], ['sid'])
 

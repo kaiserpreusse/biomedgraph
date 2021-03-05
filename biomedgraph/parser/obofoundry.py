@@ -17,8 +17,8 @@ OBO_FILE_MAPPINGS = {
 
 class OboFoundryParser(ReturnParser):
 
-    def __init__(self, root_dir):
-        super(OboFoundryParser, self).__init__(root_dir)
+    def __init__(self):
+        super(OboFoundryParser, self).__init__()
 
         self.arguments = ['ontology_name']
 

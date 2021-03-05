@@ -26,9 +26,9 @@ class RefseqEntityParser(ReturnParser):
 
         9606    Homo sapiens    NM_000035.3     complete|vertebrate_mammalian   REVIEWED        2426
     """
-    def __init__(self, root_dir):
+    def __init__(self):
 
-        super(RefseqEntityParser, self).__init__(root_dir)
+        super(RefseqEntityParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']
@@ -101,11 +101,11 @@ class RefseqCodesParser(ReturnParser):
         :return: List of (Gene)-[CODES]-(Transcript) Relationships
         """
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
         :param refseq_instance: The RefSeq DataSource instance.
         """
-        super(RefseqCodesParser, self).__init__(root_dir)
+        super(RefseqCodesParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']

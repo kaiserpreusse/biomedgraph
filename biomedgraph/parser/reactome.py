@@ -9,13 +9,13 @@ log = logging.getLogger(__name__)
 
 class ReactomePathwayParser(ReturnParser):
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
 
         :param mirtarbase_instance: NcbiGene Instance
         :type mirtarbase_instance: DataSourceInstance
         """
-        super(ReactomePathwayParser, self).__init__(root_dir)
+        super(ReactomePathwayParser, self).__init__()
 
         # NodeSets
         self.pathways = NodeSet(['Pathway'], merge_keys=['sid'])
@@ -94,13 +94,13 @@ class ReactomeMappingParser(ReturnParser):
     """
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
 
         :param mirtarbase_instance: NcbiGene Instance
         :type mirtarbase_instance: DataSourceInstance
         """
-        super(ReactomeMappingParser, self).__init__(root_dir)
+        super(ReactomeMappingParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']

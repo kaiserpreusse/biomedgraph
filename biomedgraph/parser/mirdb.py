@@ -8,8 +8,8 @@ TAXID_2_MIRPREFIX = {'9606': 'hsa',
 
 class MirdbParser(ReturnParser):
 
-    def __init__(self, root_dir):
-        super(MirdbParser, self).__init__(root_dir)
+    def __init__(self):
+        super(MirdbParser, self).__init__()
 
         # arguments
         self.arguments = ['taxid']

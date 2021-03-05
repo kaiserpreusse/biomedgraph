@@ -13,10 +13,10 @@ FILE_NAME = 'miRTarBase_MTI.xlsx'
 
 class MirtarbaseParser(ReturnParser):
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
         """
-        super(MirtarbaseParser, self).__init__(root_dir)
+        super(MirtarbaseParser, self).__init__()
 
         # RelationshipSets
         self.mirna_targets_gene = RelationshipSet('TARGETS', ['Mirna'], ['Gene'], ['name'], ['sid'])

@@ -9,9 +9,9 @@ log = logging.getLogger(__name__)
 
 class SwissLipidsParser(ReturnParser):
 
-    def __init__(self, root_dir):
+    def __init__(self):
 
-        super(SwissLipidsParser, self).__init__(root_dir)
+        super(SwissLipidsParser, self).__init__()
 
         # define NodeSet and RelationshipSet
         self.lipids = NodeSet(['Lipid'], merge_keys=['sid'])

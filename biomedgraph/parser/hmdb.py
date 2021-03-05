@@ -9,8 +9,8 @@ log = logging.getLogger(__name__)
 
 class HmdbParser(ReturnParser):
 
-    def __init__(self, root_dir):
-        super(HmdbParser, self).__init__(root_dir)
+    def __init__(self):
+        super(HmdbParser, self).__init__()
 
         # NodeSets
         self.metabolites = NodeSet(['Metabolite'], merge_keys=['sid'])

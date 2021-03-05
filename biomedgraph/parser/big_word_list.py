@@ -8,10 +8,10 @@ log = logging.getLogger(__name__)
 class BigWordListParser(ReturnParser):
 
 
-    def __init__(self, root_dir):
+    def __init__(self):
         """
         """
-        super(BigWordListParser, self).__init__(root_dir)
+        super(BigWordListParser, self).__init__()
 
         # NodeSets
         self.words = NodeSet(['Word'], merge_keys=['value'])
