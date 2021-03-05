@@ -20,7 +20,6 @@ class BigWordListParser(ReturnParser):
         self.run()
 
     def run(self):
-        # TODO iterate all word lists and set list_1:true on the Word node
 
         log.info("Run {}".format(self.__class__.__name__))
 
