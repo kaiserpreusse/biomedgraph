@@ -1,6 +1,6 @@
 from .ncbigene import NcbiGeneParser
 from .ensembl import EnsemblEntityParser, EnsemblMappingParser, EnsemblLocusParser
-from .refseq import RefseqEntityParser, RefseqCodesParser
+from .refseq import RefseqEntityParser, RefseqCodesParser, RefseqRemovedRecordsParser
 from .uniprot import UniprotKnowledgebaseParser
 from .mirbase import MirbaseParser
 from .mirdb import MirdbParser

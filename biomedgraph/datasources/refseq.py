@@ -1,9 +1,82 @@
 import posixpath
 import os
+import gzip
+from collections import defaultdict
+import zlib
+import logging
+
+from typing import List
 
 from graphpipeline.datasource import ManyVersionsRemoteDataSource
 from graphpipeline.datasource import DataSourceVersion
 from graphpipeline.datasource.helper import downloader
+
+log = logging.getLogger(__name__)
+
+
+def download_and_filter_data_file(url: str, path: str, taxids: List[str]) -> str:
+    """
+    Most RefSeq data files start with the Taxonomy ID. This function downloads a gzipped
+    data file, filters all records for a list of Taxonomy IDs and deletes the original file.
+
+    :param url: URL to __download.
+    :param path: Local __download path.
+    :param taxids: List of Taxonomy IDs to filter.
+    :return: Path of filtered file.
+    """
+    taxids = set(taxids)
+
+    downloaded_file = downloader.download_file_to_dir(url, path)
+
+    original_filename = downloaded_file.split('/')[-1]
+    downloaded_path = downloaded_file.rsplit('/', 1)[0]
+
+    # release10.removed-records.gz -> release10.removed-records_filtered.gz
+    new_filename = f"{original_filename.rsplit('.', 1)[0]}.filtered.gz"
+    new_filepath = os.path.join(downloaded_path, new_filename)
+
+    with gzip.open(new_filepath, 'wt') as output:
+
+        with gzip.open(downloaded_file, 'rt') as f:
+            try:
+                for l in f:
+                    this_taxid = l.strip().split('\t')[0]
+                    if this_taxid in taxids:
+                        output.write(l)
+            except zlib.error as e:
+                log.error(e)
+                log.error(f"File {downloaded_file} not readable, corrupted __download.")
+
+    os.remove(downloaded_file)
+    return new_filepath
+
+
+def get_list_of_archived_releases() -> defaultdict:
+    """
+    The Refseq release has 3 main files:
+        - Release catalog
+        - accession2geneid
+        - removed records
+
+    This function returns a dictionary of archived files by release.
+    """
+    archive_path = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/release-catalog/archive/'
+    list_of_archive_files = downloader.list_files_only_ftp_dir(archive_path)
+
+    release_number_2_files = defaultdict(dict)
+
+    for item in list_of_archive_files:
+        name = item.name
+        if name.startswith('release') and 'accession2geneid' in name:
+            # release98.accession2geneid.gz -> 98
+            release_number = (name.split('.')[0]).replace('release', '')
+            release_number_2_files[release_number]['accession2geneid'] = archive_path+name
+        elif name.startswith('release') and 'removed-records' in name:
+            # release11.removed-records.gz -> 11
+            release_number = (name.split('.')[0]).replace('release', '')
+            release_number_2_files[release_number]['removed-records'] = archive_path+name
+
+    return release_number_2_files
 
 
 class Refseq(ManyVersionsRemoteDataSource):
@@ -17,6 +90,7 @@ class Refseq(ManyVersionsRemoteDataSource):
         :type root_dir: str
         """
         super(Refseq, self).__init__(root_dir)
+        arguments = ['taxid']
 
     def latest_remote_version(self):
         """
@@ -56,34 +130,48 @@ class Refseq(ManyVersionsRemoteDataSource):
 
         return ds_versions
 
-    def release_path(self, version):
-        """
-        Get path to used release. This is either the base path or the sub directory 'archive'.
-        :param version: variable of the type DataSourceVersion
-        :return: Path for current release.
-        """
-        # path is either base for latest version or 'archive' if not latest
-        if version == self.latest_remote_version():
-            cat_path = posixpath.join(self.BASEURL, self.BASEPATH)
-        else:
-            cat_path = posixpath.join(self.BASEURL, self.BASEPATH, 'archive')
-
-        return cat_path
-
-    def download_function(self, instance, version):
+    def download_function(self, instance, version, taxids=None):
         """
         Download the catalogue file containing all RefSeq ids and the gene transcript mapping file.
         """
 
-        cat_file_name = 'RefSeq-release{0}.catalog.gz'.format(version)
-        downloader.download_file_to_dir(
-            posixpath.join(self.release_path(version), cat_file_name), instance.process_instance_dir
-        )
+        self.download_archived_releases(instance.process_instance_dir, taxids)
 
-        filename = 'release{0}.accession2geneid.gz'.format(version)
-        downloader.download_file_to_dir(
-            posixpath.join(self.release_path(version), filename), instance.process_instance_dir
-        )
+        catalog_path = 'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/release-catalog/'
+
+        catalog = posixpath.join(catalog_path, f'RefSeq-release{version}.catalog.gz')
+        accession2geneid = posixpath.join(catalog_path, f'release{version}.accession2geneid.gz')
+        removed_records = f'ftp://ftp.ncbi.nlm.nih.gov/refseq/release/release-catalog/release{version}.removed-records.gz'
+
+        if taxids:
+            download_and_filter_data_file(catalog, instance.process_instance_dir, taxids)
+            download_and_filter_data_file(accession2geneid, instance.process_instance_dir, taxids)
+            download_and_filter_data_file(removed_records, instance.process_instance_dir, taxids)
+        else:
+            downloader.download_file_to_dir(catalog, instance.process_instance_dir)
+            downloader.download_file_to_dir(accession2geneid, instance.process_instance_dir)
+            downloader.download_file_to_dir(removed_records, instance.process_instance_dir)
+
+
+    def download_archived_releases(self, path, taxids=None):
+        archive_files = get_list_of_archived_releases()
+
+        for release, files in archive_files.items():
+            # only __download if accession2geneid and removed-records are available
+            if taxids:
+                try:
+                    download_and_filter_data_file(files['accession2geneid'], path, taxids)
+                except KeyError: pass
+                try:
+                    download_and_filter_data_file(files['removed-records'], path, taxids)
+                except KeyError: pass
+            else:
+                try:
+                    downloader.download_file_to_dir(files['accession2geneid'], path)
+                except KeyError: pass
+                try:
+                    downloader.download_file_to_dir(files['removed-records'], path)
+                except KeyError: pass
 
     @staticmethod
     def get_catalog_file_path(instance):

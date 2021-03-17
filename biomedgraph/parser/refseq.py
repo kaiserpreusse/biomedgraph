@@ -85,6 +85,111 @@ class RefseqEntityParser(ReturnParser):
                                 check_proteins.add(refseq_acc)
 
 
+class RefseqRemovedRecordsParser(ReturnParser):
+    """
+    Parse all removed records from the removed_records files.
+
+    The mappings to gene IDs are in the accession2geneid of the *previous* release.
+
+    Simple approach is to collect all files from all previous releases and collect all records (relationships
+    are filtered locally).
+    """
+    def __init__(self):
+        super(RefseqRemovedRecordsParser, self).__init__()
+
+        self.arguments = ['taxid']
+
+        self.legacy_transcripts = NodeSet(['Transcript', 'Legacy'], merge_keys=['sid'])
+        self.legacy_proteins = NodeSet(['Protein', 'Legacy'], merge_keys=['sid'])
+
+    def run_with_mounted_arguments(self):
+        self.run(self.taxid)
+
+    def run(self, taxid):
+        """
+        ==========================================
+        release#.removed-records
+        ==========================================
+        Content: Tab-delimited report of records that were included in the previous
+        release but are not included in the current release.
+
+        Columns:
+         1. taxonomy ID
+         2. species name
+         3. accession.version
+         4. refseq release directory accession is included in
+              complete + other directories
+              '|' delimited
+         5. refseq status
+              na - not available; status codes are not applied to most genomic records
+              INFERRED
+              PREDICTED
+              PROVISIONAL
+              VALIDATED
+              REVIEWED
+              MODEL
+              UNKNOWN - status code not provided; however usually is provided for
+                        this type of record
+         6. length
+         7. removed status
+              dead protein: protein was removed when genomic record was reloaded
+                            and protein  was not found on the nucleotide update.
+                            This is an implied permanent suppress.
+
+              temporarily suppressed: record was temporarily removed and may be
+                                      restored at a later date.
+
+              permanently suppressed: record was permanently removed. It is possible
+                                      to restore this type of record however at the
+                                      time of removal that action is not anticipated.
+
+              replaced by accession:  the accession in column 3 has become a secondary
+                                      accession that cited in column 8.
+
+        :param taxid:
+        :return:
+        """
+        refseq_instance = self.get_instance_by_name('Refseq')
+
+        removed_records_files = refseq_instance.find_files(lambda x: 'removed-records' in x and x.endswith('.gz'))
+
+        check_transcripts = set()
+        check_proteins = set()
+
+        for file in removed_records_files:
+            log.debug(f"Parse {file}")
+            release = file.split('/')[-1].split('.')[0].replace('release', '')
+            with gzip.open(file, 'rt') as f:
+                for l in f:
+                    flds = l.strip().split('\t')
+                    this_taxid = flds[0]
+
+                    if this_taxid == taxid:
+                        refseq_acc, version = flds[2].split('.')
+                        reason = flds[-1]
+                        # transcript
+                        if refseq_acc.startswith('NM') or refseq_acc.startswith('NR') or refseq_acc.startswith(
+                                "XM") or refseq_acc.startswith("XR"):
+                            if refseq_acc not in check_transcripts:
+                                self.legacy_transcripts.add_node(
+                                    {'sid': refseq_acc, 'version': version,
+                                     'status': 'removed', 'removed_in': release, 'reason': reason,
+                                     'source': 'refseq', 'taxid': taxid}
+                                )
+
+                                check_transcripts.add(refseq_acc)
+                        # protein
+                        if refseq_acc.startswith('NP') or refseq_acc.startswith('XP'):
+                            if refseq_acc not in check_proteins:
+                                self.legacy_proteins.add_node(
+                                    {'sid': refseq_acc, 'version': version,
+                                     'status': 'removed', 'removed_in': release, 'reason': reason,
+                                     'source': 'refseq', 'taxid': taxid})
+                                check_proteins.add(refseq_acc)
+
+
+
+
 class RefseqCodesParser(ReturnParser):
     """
         Get mappings from NCBI Gene to Refseq transcripts.
@@ -113,9 +218,6 @@ class RefseqCodesParser(ReturnParser):
         # define NodeSet and RelationshipSet
         self.gene_codes_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript'], ['sid'], ['sid'])
         self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'])
-
-        self.object_sets = [self.gene_codes_transcript, self.transcript_codes_protein]
-        self.container.add_all(self.object_sets)
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
