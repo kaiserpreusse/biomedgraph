@@ -19,8 +19,8 @@ def download_and_filter_data_file(url: str, path: str, taxids: List[str]) -> str
     Most RefSeq data files start with the Taxonomy ID. This function downloads a gzipped
     data file, filters all records for a list of Taxonomy IDs and deletes the original file.
 
-    :param url: URL to __download.
-    :param path: Local __download path.
+    :param url: URL to download.
+    :param path: Local download path.
     :param taxids: List of Taxonomy IDs to filter.
     :return: Path of filtered file.
     """
@@ -45,7 +45,7 @@ def download_and_filter_data_file(url: str, path: str, taxids: List[str]) -> str
                         output.write(l)
             except zlib.error as e:
                 log.error(e)
-                log.error(f"File {downloaded_file} not readable, corrupted __download.")
+                log.error(f"File {downloaded_file} not readable, corrupted download.")
 
     os.remove(downloaded_file)
     return new_filepath
@@ -157,7 +157,7 @@ class Refseq(ManyVersionsRemoteDataSource):
         archive_files = get_list_of_archived_releases()
 
         for release, files in archive_files.items():
-            # only __download if accession2geneid and removed-records are available
+            # only download if accession2geneid and removed-records are available
             if taxids:
                 try:
                     download_and_filter_data_file(files['accession2geneid'], path, taxids)
