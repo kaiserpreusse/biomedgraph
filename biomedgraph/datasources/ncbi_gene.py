@@ -22,7 +22,8 @@ class NcbiGene(RollingReleaseRemoteDataSource):
             'ftp://ftp.ncbi.nih.gov/gene/DATA/gene_info.gz',
             'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
             'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2accession.gz',
-            'ftp://ftp.ncbi.nih.gov/gene/DATA/gene_orthologs.gz'
+            'ftp://ftp.ncbi.nih.gov/gene/DATA/gene_orthologs.gz',
+            'ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/gene_history.gz'
         ]
 
         for file in files:

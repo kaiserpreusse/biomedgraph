@@ -10,7 +10,7 @@ from .mesh import MeshParser
 from .big_word_list import BigWordListParser
 from .dummyparser import DummyParser
 from .ncbi_homologene import NcbiHomoloGeneParser
-from .ncbigene import NcbiGeneOrthologParser
+from .ncbigene import NcbiGeneOrthologParser, NcbiGeneParser, NcbiLegacyGeneParser
 from .geneontology import GeneOntologyAssociationParser
 from .gtex import GtexMetadataParser, GtexDataParser
 from .hgnc import HGNCParser

@@ -187,8 +187,12 @@ class Refseq(ManyVersionsRemoteDataSource):
 
         file_name = 'RefSeq-release{0}.catalog.gz'.format(version)
         file_path = os.path.join(instance.instance_dir, file_name)
-
-        return file_path
+        if os.path.exists(file_path):
+            return file_path
+        else:
+            file_name = 'RefSeq-release{0}.catalog.filtered.gz'.format(version)
+            file_path = os.path.join(instance.instance_dir, file_name)
+            return file_path
 
     @staticmethod
     def get_accession2geneid_file_path(instance):
@@ -204,5 +208,10 @@ class Refseq(ManyVersionsRemoteDataSource):
 
         file_name = 'release{0}.accession2geneid.gz'.format(version)
         file_path = os.path.join(instance.instance_dir, file_name)
-
-        return file_path
+        # try to return unfiltered
+        if os.path.exists(file_path):
+            return file_path
+        else:
+            file_name = 'release{0}.accession2geneid.filtered.gz'.format(version)
+            file_path = os.path.join(instance.instance_dir, file_name)
+            return file_path

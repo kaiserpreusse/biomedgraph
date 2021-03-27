@@ -99,13 +99,27 @@ class RefseqRemovedRecordsParser(ReturnParser):
 
         self.arguments = ['taxid']
 
+        self.legacy_ids = set()
+
         self.legacy_transcripts = NodeSet(['Transcript', 'Legacy'], merge_keys=['sid'])
+        self.legacy_transcript_now_transcript = RelationshipSet('REPLACED_BY', ['Transcript'], ['Transcript'], ['sid'], ['sid'])
         self.legacy_proteins = NodeSet(['Protein', 'Legacy'], merge_keys=['sid'])
+        self.legacy_protein_now_protein = RelationshipSet('REPLACED_BY', ['Protein'], ['Protein'],
+                                                                ['sid'], ['sid'])
+        self.gene_codes_legacy_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript', 'Legacy'], ['sid'], ['sid'])
+        self.legacy_transcript_codes_protein = RelationshipSet('CODES', ['Transcript', 'Legacy'], ['Protein'],
+                                                               ['sid'], ['sid'])
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
 
     def run(self, taxid):
+        # get the nodes first, this also creates a set of all legacy IDs
+        self.get_legacy_nodes(taxid)
+        # then get the relationnships to gene IDs, this uses the set of legacy IDs to not recreate existing relationships
+        self.get_legacy_gene_rels(taxid)
+
+    def get_legacy_nodes(self, taxid):
         """
         ==========================================
         release#.removed-records
@@ -153,9 +167,6 @@ class RefseqRemovedRecordsParser(ReturnParser):
 
         removed_records_files = refseq_instance.find_files(lambda x: 'removed-records' in x and x.endswith('.gz'))
 
-        check_transcripts = set()
-        check_proteins = set()
-
         for file in removed_records_files:
             log.debug(f"Parse {file}")
             release = file.split('/')[-1].split('.')[0].replace('release', '')
@@ -170,24 +181,93 @@ class RefseqRemovedRecordsParser(ReturnParser):
                         # transcript
                         if refseq_acc.startswith('NM') or refseq_acc.startswith('NR') or refseq_acc.startswith(
                                 "XM") or refseq_acc.startswith("XR"):
-                            if refseq_acc not in check_transcripts:
+                            if refseq_acc not in self.legacy_ids:
                                 self.legacy_transcripts.add_node(
                                     {'sid': refseq_acc, 'version': version,
                                      'status': 'removed', 'removed_in': release, 'reason': reason,
                                      'source': 'refseq', 'taxid': taxid}
                                 )
 
-                                check_transcripts.add(refseq_acc)
+                                self.legacy_ids.add(refseq_acc)
+
+                                if 'replaced by' in reason:
+                                    # replaced by NM_022375 -> NM_022375
+                                    new_accession = (reason.rsplit(' ', 1)[1]).split('.')[0]
+                                    self.legacy_transcript_now_transcript.add_relationship(
+                                        {'sid': refseq_acc}, {'sid': new_accession}, {}
+                                    )
                         # protein
                         if refseq_acc.startswith('NP') or refseq_acc.startswith('XP'):
-                            if refseq_acc not in check_proteins:
+                            if refseq_acc not in self.legacy_ids:
                                 self.legacy_proteins.add_node(
                                     {'sid': refseq_acc, 'version': version,
                                      'status': 'removed', 'removed_in': release, 'reason': reason,
                                      'source': 'refseq', 'taxid': taxid})
-                                check_proteins.add(refseq_acc)
+                                self.legacy_ids.add(refseq_acc)
 
+                                if 'replaced by' in reason:
+                                    # replaced by NM_022375 -> NM_022375
+                                    new_accession = (reason.rsplit(' ', 1)[1]).split('.')[0]
+                                    self.legacy_protein_now_protein.add_relationship(
+                                        {'sid': refseq_acc}, {'sid': new_accession}, {}
+                                    )
 
+    def get_legacy_gene_rels(self, taxid):
+        """
+        Get the gene/protein relationships for
+        ==========================================
+        release#.accession2geneid
+        ==========================================
+        Content: Report of GeneIDs available at the time of the RefSeq release.
+        Limited to GeneIDs that are associated with RNA or mRNA records with
+        accession prefix N[M|R] and X[M|R].
+
+        Columns (tab delimited):
+
+            1: Taxonomic ID
+            2: Entrez GeneID
+            3: Transcript accession.version
+            4: Protein accession.version
+               na if no data
+               --for example, the NR_ accession prefix is used for RNA
+                 so there is no corresponding protein record
+
+        :param taxid:
+        :return:
+        """
+        log.debug("Get relationships from legacy RefSeq IDs to genes.")
+        refseq_instance = self.get_instance_by_name('Refseq')
+
+        archived_accession2geneid = refseq_instance.find_files(lambda x: 'accession2geneid' in x and x.endswith('.gz'))
+
+        for file in archived_accession2geneid:
+            log.debug(f"Parse {file}")
+
+            with gzip.open(file, 'rt') as f:
+                for l in f:
+                    flds = l.strip().split('\t')
+                    this_taxid = flds[0]
+                    if this_taxid == taxid:
+                        """
+                                    1: Taxonomic ID
+            2: Entrez GeneID
+            3: Transcript accession.version
+            4: Protein accession.version
+               na if no data
+               --for example, the NR_ accession prefix is used for RNA
+                 so there is no corresponding protein record
+                        """
+                        gene_id = flds[1].strip()
+                        transcript_accession = flds[2].strip().split('.')[0]
+                        protein_accession = flds[3].strip().split('.')[0]
+                        if transcript_accession in self.legacy_ids:
+                            self.gene_codes_legacy_transcript.add_relationship(
+                                {'sid': gene_id}, {'sid': transcript_accession}, {}
+                            )
+                            if transcript_accession != 'na':
+                                self.legacy_transcript_codes_protein.add_relationship(
+                                    {'sid': transcript_accession}, {'sid': protein_accession}, {}
+                                )
 
 
 class RefseqCodesParser(ReturnParser):

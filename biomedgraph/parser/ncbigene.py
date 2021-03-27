@@ -35,7 +35,6 @@ class NcbiGeneParser(ReturnParser):
     def run(self, taxid):
         log.info(f"Run {self.__class__.__name__}")
         ncbigene_instance = self.get_instance_by_name('NcbiGene')
-        print(f'instance: {ncbigene_instance}')
 
         # get org specific gene_info file if available
         if taxid in TAXID_SPECIFIC_GENEINFO:
@@ -43,6 +42,7 @@ class NcbiGeneParser(ReturnParser):
         else:
             gene_info_file = ncbigene_instance.get_file('gene_info.gz')
 
+        log.info(gene_info_file)
         self.parse_gene_info(gene_info_file, taxid)
 
     def parse_gene_info(self, gene_info_file, taxid):
@@ -116,6 +116,51 @@ class NcbiGeneParser(ReturnParser):
                         self.gene_maps_genesymbol.add_relationship({'sid': entrez_gene_id},
                                                                    {'sid': symbol, 'taxid': taxid},
                                                                    {'source': 'ncbigene', 'status': 'synonym'})
+
+class NcbiLegacyGeneParser(ReturnParser):
+    """
+    Parse legacy gene IDs from gene_history.gz
+    #tax_id GeneID  Discontinued_GeneID     Discontinued_Symbol     Discontinue_Date
+    9       -       1246494 repA1   20031113
+    9       -       1246495 repA2   20031113
+    9       -       1246496 leuA    20031113
+    """
+
+    def __init__(self):
+        super(NcbiLegacyGeneParser, self).__init__()
+
+
+        self.arguments = ['taxid']
+
+        self.legacy_genes = NodeSet(['Gene', 'Legacy'], merge_keys=['sid'])
+        self.legacy_gene_now_gene = RelationshipSet('REPLACED_BY', ['Gene', 'Legacy'], ['Gene'], ['sid'], ['sid'])
+
+    def run_with_mounted_arguments(self):
+        self.run(self.taxid)
+
+    def run(self, taxid):
+        log.debug(f'Run parser {self.__class__.__name__} for taxID: {taxid}.')
+        ncbigene_instance = self.get_instance_by_name('NcbiGene')
+        gene_history_file = ncbigene_instance.get_file('gene_history.gz')
+
+        with gzip.open(gene_history_file, 'rt') as f:
+            # skip header
+            next(f)
+            for l in f:
+                flds = l.strip().split('\t')
+                this_taxid = flds[0]
+                if this_taxid == taxid:
+                    new_gene_id = flds[1]
+                    discontinued_gene_id = flds[2]
+                    discontinued_symbol = flds[3]
+                    date = flds[4]
+                    self.legacy_genes.add_node(
+                        {'sid': discontinued_gene_id, 'date': date, 'symbol': discontinued_symbol}
+                    )
+                    if new_gene_id != '-':
+                        self.legacy_gene_now_gene.add_relationship(
+                            {'sid': discontinued_gene_id}, {'sid': new_gene_id}, {}
+                        )
 
 
 class NcbiGeneOrthologParser(ReturnParser):
