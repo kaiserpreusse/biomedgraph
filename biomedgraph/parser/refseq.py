@@ -185,7 +185,7 @@ class RefseqRemovedRecordsParser(ReturnParser):
                                 self.legacy_transcripts.add_node(
                                     {'sid': refseq_acc, 'version': version,
                                      'status': 'removed', 'removed_in': release, 'reason': reason,
-                                     'source': 'refseq', 'taxid': taxid}
+                                     'source': refseq_instance.datasource.name, 'taxid': taxid}
                                 )
 
                                 self.legacy_ids.add(refseq_acc)
@@ -202,7 +202,7 @@ class RefseqRemovedRecordsParser(ReturnParser):
                                 self.legacy_proteins.add_node(
                                     {'sid': refseq_acc, 'version': version,
                                      'status': 'removed', 'removed_in': release, 'reason': reason,
-                                     'source': 'refseq', 'taxid': taxid})
+                                     'source': refseq_instance.datasource.name, 'taxid': taxid})
                                 self.legacy_ids.add(refseq_acc)
 
                                 if 'replaced by' in reason:
