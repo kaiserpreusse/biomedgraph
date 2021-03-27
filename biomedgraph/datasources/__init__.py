@@ -18,6 +18,7 @@ from .obofoundry import OboFoundry
 from .swisslipids import SwissLipids
 from .chebi import Chebi
 from .hmdb import Hmdb
+from .lncipedia import Lncipedia
 
 import sys
 import inspect
