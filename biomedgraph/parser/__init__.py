@@ -18,6 +18,7 @@ from .obofoundry import OboFoundryParser
 from .swisslipids import SwissLipidsParser
 from .chebi import ChebiParser
 from .hmdb import HmdbParser
+from .lncipedia import LncipediaParser
 
 from graphpipeline.parser import Parser
 import sys
