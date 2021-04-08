@@ -19,12 +19,12 @@ from .swisslipids import SwissLipidsParser
 from .chebi import ChebiParser
 from .hmdb import HmdbParser
 from .lncipedia import LncipediaParser
-
 from graphpipeline.parser import Parser
-import sys
-import inspect
 
-current_module = sys.modules[__name__]
-
-ALL_PARSER = dict([(name, cls) for name, cls in inspect.getmembers(current_module, inspect.isclass) if
-                   issubclass(cls, Parser) and cls.__name__ != Parser.__name__])
+# import sys
+# import inspect
+#
+# current_module = sys.modules[__name__]
+#
+# ALL_PARSER = dict([(name, cls) for name, cls in inspect.getmembers(current_module, inspect.isclass) if
+#                    issubclass(cls, Parser) and cls.__name__ != Parser.__name__])

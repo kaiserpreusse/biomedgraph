@@ -19,12 +19,9 @@ from .swisslipids import SwissLipids
 from .chebi import Chebi
 from .hmdb import Hmdb
 from .lncipedia import Lncipedia
-
-import sys
-import inspect
 from graphpipeline.datasource import BaseDataSource
 
-current_module = sys.modules[__name__]
-
-ALL_DATASOURCES = dict([(name, cls) for name, cls in inspect.getmembers(current_module, inspect.isclass) if
-                        issubclass(cls, BaseDataSource) and cls.__name__ != BaseDataSource.__name__])
+# current_module = sys.modules[__name__]
+#
+# ALL_DATASOURCES = dict([(name, cls) for name, cls in inspect.getmembers(current_module, inspect.isclass) if
+#                         issubclass(cls, BaseDataSource) and cls.__name__ != BaseDataSource.__name__])
