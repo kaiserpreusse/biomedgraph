@@ -1,6 +1,6 @@
 import pytest
 
-from biodatagraph.parser import HGNCParser
+from biomedgraph.parser import HGNCParser
 
 
 class TestHGNCParser:
