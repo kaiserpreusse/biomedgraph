@@ -71,9 +71,9 @@ UniProtKB	A0A075B5J0	Trbv26		GO:0005886	PMID:21873635	IBA	MGI:MGI:98596|PANTHER:
 
 class TestGeneOntologyAssociationParser:
 
-    def test_gaf_parser_human(self, tmp_path, gaf_file):
+    def test_gaf_parser_human(self, gaf_file):
 
-        parser = GeneOntologyAssociationParser(tmp_path)
+        parser = GeneOntologyAssociationParser()
 
         parser.parse_goa_uniprot_gaf_file(gaf_file, '9606')
 
@@ -83,8 +83,8 @@ class TestGeneOntologyAssociationParser:
             assert type(rel.start_node_properties['sid']) is str
             assert 'GO' in rel.end_node_properties['sid']
 
-    def test_gaf_parser_mouse(self, tmp_path, gaf_file):
-        parser = GeneOntologyAssociationParser(tmp_path)
+    def test_gaf_parser_mouse(self, gaf_file):
+        parser = GeneOntologyAssociationParser()
 
         parser.parse_goa_uniprot_gaf_file(gaf_file, '10090')
 

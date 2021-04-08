@@ -5,8 +5,8 @@ from biomedgraph.parser import HGNCParser
 
 class TestHGNCParser:
 
-    def test_hgnc_parse_complete_file(self, tmp_path, hgnc_test_file):
-        hgnc_parser = HGNCParser(tmp_path)
+    def test_hgnc_parse_complete_file(self, hgnc_test_file):
+        hgnc_parser = HGNCParser()
 
         hgnc_parser.parse_hgnc_complete_file(hgnc_test_file)
 
