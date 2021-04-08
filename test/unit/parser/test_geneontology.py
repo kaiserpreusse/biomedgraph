@@ -1,8 +1,7 @@
 import pytest
 import gzip
 
-from biodatagraph.parser.parser import Parser
-from biodatagraph.parser import GeneOntologyAssociationParser
+from biomedgraph.parser import GeneOntologyAssociationParser
 
 
 @pytest.fixture(scope='session')
