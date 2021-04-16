@@ -33,7 +33,7 @@ ENSEMBL_TAXID_GTF_FILE = {
 # Homo_sapiens.GRCh38.97.refseq.tsv.gz
 # Homo_sapiens.GRCh38.97.uniprot.tsv.gz
 ENSEMBL_TAXID_TSV_FILE = {
-    '10090': 'Mus_musculus.GRCm38.XXVERSIONXX.XXDBXX.tsv.gz',
+    '10090': 'Mus_musculus.GRCm39.XXVERSIONXX.XXDBXX.tsv.gz',
     '9606': 'Homo_sapiens.GRCh38.XXVERSIONXX.XXDBXX.tsv.gz'
 }
 
