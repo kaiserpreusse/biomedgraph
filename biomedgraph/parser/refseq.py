@@ -214,7 +214,8 @@ class RefseqRemovedRecordsParser(ReturnParser):
 
     def get_legacy_gene_rels(self, taxid):
         """
-        Get the gene/protein relationships for
+        Get the gene/protein relationships for the legacy Transcripts.
+
         ==========================================
         release#.accession2geneid
         ==========================================
@@ -239,7 +240,7 @@ class RefseqRemovedRecordsParser(ReturnParser):
         refseq_instance = self.get_instance_by_name('Refseq')
 
         archived_accession2geneid = refseq_instance.find_files(lambda x: 'accession2geneid' in x and x.endswith('.gz'))
-
+        check_set = set()
         for file in archived_accession2geneid:
             log.debug(f"Parse {file}")
 
@@ -261,13 +262,17 @@ class RefseqRemovedRecordsParser(ReturnParser):
                         transcript_accession = flds[2].strip().split('.')[0]
                         protein_accession = flds[3].strip().split('.')[0]
                         if transcript_accession in self.legacy_ids:
-                            self.gene_codes_legacy_transcript.add_relationship(
-                                {'sid': gene_id}, {'sid': transcript_accession}, {}
-                            )
-                            if transcript_accession != 'na':
-                                self.legacy_transcript_codes_protein.add_relationship(
-                                    {'sid': transcript_accession}, {'sid': protein_accession}, {}
+                            if (gene_id, transcript_accession) not in check_set:
+                                self.gene_codes_legacy_transcript.add_relationship(
+                                    {'sid': gene_id}, {'sid': transcript_accession}, {}
                                 )
+                                check_set.add((gene_id, transcript_accession))
+                            if transcript_accession != 'na':
+                                if (transcript_accession, protein_accession) not in check_set:
+                                    self.legacy_transcript_codes_protein.add_relationship(
+                                        {'sid': transcript_accession}, {'sid': protein_accession}, {}
+                                    )
+                                    check_set.add((transcript_accession, protein_accession))
 
 
 class RefseqCodesParser(ReturnParser):
