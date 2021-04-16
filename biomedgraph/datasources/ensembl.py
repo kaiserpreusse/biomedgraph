@@ -19,8 +19,12 @@ ENSEMBL_TAXID_SUBDIR = {
 # replace XXVERSIONXX with the current version
 # long term solution: complete file name construction including genome name/version
 ENSEMBL_TAXID_GTF_FILE = {
-    '10090': 'Mus_musculus.GRCm38.XXVERSIONXX.chr_patch_hapl_scaff.gtf.gz',
-    '9606': 'Homo_sapiens.GRCh38.XXVERSIONXX.chr_patch_hapl_scaff.gtf.gz'
+    'patched':
+        {'10090': 'Mus_musculus.GRCm39.XXVERSIONXX.chr_patch_hapl_scaff.gtf.gz',
+        '9606': 'Homo_sapiens.GRCh38.XXVERSIONXX.chr_patch_hapl_scaff.gtf.gz'},
+    'flat':
+        {'10090': 'Mus_musculus.GRCm39.XXVERSIONXX.chr.gtf.gz',
+         '9606': 'Homo_sapiens.GRCh38.XXVERSIONXX.chr.gtf.gz'}
 }
 
 # Homo_sapiens.GRCh38.97.ena.tsv.gz
@@ -229,7 +233,7 @@ class Ensembl(ManyVersionsRemoteDataSource):
         return taxid_2_name, name_2_taxid
 
     @staticmethod
-    def get_gtf_file_path(taxid, instance):
+    def get_gtf_file_path(taxid, instance, patched=True):
         """
         Return the path to a GTF file for a given taxid.
 
@@ -241,9 +245,15 @@ class Ensembl(ManyVersionsRemoteDataSource):
             instance.version
         )
 
+        if patched:
+            selector = 'patched'
+        else:
+            selector = 'flat'
+
         organism_subpath = ENSEMBL_TAXID_SUBDIR[taxid]
 
-        gtf_file_name_base = ENSEMBL_TAXID_GTF_FILE[taxid]
+        gtf_file_name_base = ENSEMBL_TAXID_GTF_FILE[selector][taxid]
+
         gtf_file_name = gtf_file_name_base.replace('XXVERSIONXX', str(version))
 
         gtf_file_path = os.path.join(instance.instance_dir, 'gtf', organism_subpath, gtf_file_name)

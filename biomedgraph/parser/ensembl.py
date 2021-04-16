@@ -1,11 +1,13 @@
 import gzip
 import logging
+import os
 from uuid import uuid4
 
+from graphio import NodeSet, RelationshipSet
+
+from biomedgraph.datasources.ensembl import Ensembl
 from graphpipeline.parser import GffReader
 from graphpipeline.parser import ReturnParser
-from biomedgraph.datasources.ensembl import Ensembl
-from graphio import NodeSet, RelationshipSet
 
 log = logging.getLogger(__name__)
 
@@ -38,7 +40,10 @@ class EnsemblEntityParser(ReturnParser):
         ensembl_instance = self.get_instance_by_name('Ensembl')
         datasource_name = ensembl_instance.datasource.name
 
-        ensembl_gtf_file_path = Ensembl.get_gtf_file_path(taxid, ensembl_instance)
+        # try patched path, if not available take flat
+        ensembl_gtf_file_path = Ensembl.get_gtf_file_path(taxid, ensembl_instance, patched=True)
+        if not os.path.exists(ensembl_gtf_file_path):
+            ensembl_gtf_file_path = Ensembl.get_gtf_file_path(taxid, ensembl_instance, patched=False)
 
         annotation = GffReader(ensembl_gtf_file_path)
 
