@@ -1,4 +1,4 @@
-graphio>=0.0.12
+graphio>=0.1.0
 pandas
 xlrd
 requests
