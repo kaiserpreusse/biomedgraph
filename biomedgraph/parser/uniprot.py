@@ -38,12 +38,12 @@ class UniprotKnowledgebaseParser(ReturnParser):
         self.arguments = ['taxid']
 
         # NodeSet
-        self.proteins = NodeSet(['Protein'], merge_keys=['sid'])
+        self.proteins = NodeSet(['Protein'], merge_keys=['sid'], default_props={'source': 'uniprot'})
 
         # RelationshipSet
-        self.protein_primary_protein = RelationshipSet('PRIMARY', ['Protein'], ['Protein'], ['sid'], ['sid'])
-        self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'])
-        self.protein_maps_protein = RelationshipSet('MAPS', ['Protein'], ['Protein'], ['sid'], ['sid'])
+        self.protein_primary_protein = RelationshipSet('PRIMARY', ['Protein'], ['Protein'], ['sid'], ['sid'], default_props={'source': 'uniprot'})
+        self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'], default_props={'source': 'uniprot'})
+        self.protein_maps_protein = RelationshipSet('MAPS', ['Protein'], ['Protein'], ['sid'], ['sid'], default_props={'source': 'uniprot'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -83,7 +83,7 @@ class UniprotKnowledgebaseParser(ReturnParser):
                         rec_name = desc.split(';')[0].split('Full=')[1]
 
                         primary_props = {'sid': primary_acc, 'name': rec_name, 'desc': desc, 'category': 'primary',
-                                         'source': datasource_name, 'taxid': taxid}
+                                         'taxid': taxid}
 
                         if primary_acc not in check_protein:
                             self.proteins.add_node(primary_props)
@@ -92,14 +92,14 @@ class UniprotKnowledgebaseParser(ReturnParser):
                         for secondary_acc in secondary:
                             if secondary_acc not in check_protein:
                                 self.proteins.add_node(
-                                    {'sid': secondary_acc, 'category': 'secondary', 'source': datasource_name,
+                                    {'sid': secondary_acc, 'category': 'secondary',
                                      'taxid': taxid})
                                 check_protein.add(secondary_acc)
 
                             # (Protein)-[PRIMARY]-(Protein)
                             if frozenset([primary_acc, secondary_acc]) not in check_p_p_p:
                                 self.protein_primary_protein.add_relationship(
-                                    {'sid': primary_acc}, {'sid': secondary}, {'source': datasource_name}
+                                    {'sid': primary_acc}, {'sid': secondary}, {}
                                 )
                                 check_p_p_p.add(frozenset([primary_acc, secondary_acc]))
 
@@ -131,7 +131,7 @@ class UniprotKnowledgebaseParser(ReturnParser):
                                         if uniprot_acc + refseq_id not in check_p_m_p:
                                             self.protein_maps_protein.add_relationship(
                                                 {'sid': uniprot_acc}, {'sid': refseq_id},
-                                                {'source': datasource_name}
+                                                {}
                                             )
                                             check_p_m_p.add(uniprot_acc + refseq_id)
 
@@ -146,7 +146,7 @@ class UniprotKnowledgebaseParser(ReturnParser):
                                 if ensembl_transcript_id + uniprot_acc not in check_t_c_p:
                                     self.transcript_codes_protein.add_relationship(
                                         {'sid': ensembl_transcript_id}, {'sid': uniprot_acc},
-                                        {'source': datasource_name}
+                                        {}
                                     )
                                     check_t_c_p.add(ensembl_transcript_id + uniprot_acc)
 
@@ -154,6 +154,6 @@ class UniprotKnowledgebaseParser(ReturnParser):
                                 if ensembl_protein_id + uniprot_acc not in check_p_m_p:
                                     self.protein_maps_protein.add_relationship(
                                         {'sid': uniprot_acc}, {'sid': ensembl_protein_id},
-                                        {'source': datasource_name}
+                                        {}
                                     )
                                     check_p_m_p.add(ensembl_protein_id + uniprot_acc)

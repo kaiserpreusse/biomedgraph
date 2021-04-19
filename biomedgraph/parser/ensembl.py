@@ -25,13 +25,13 @@ class EnsemblEntityParser(ReturnParser):
         self.arguments = ['taxid']
 
         # NodeSets
-        self.genes = NodeSet(['Gene'], merge_keys=['sid'])
-        self.transcripts = NodeSet(['Transcript'], merge_keys=['sid'])
-        self.proteins = NodeSet(['Protein'], merge_keys=['sid'])
+        self.genes = NodeSet(['Gene'], merge_keys=['sid'], default_props={'source': 'ensembl'})
+        self.transcripts = NodeSet(['Transcript'], merge_keys=['sid'], default_props={'source': 'ensembl'})
+        self.proteins = NodeSet(['Protein'], merge_keys=['sid'], default_props={'source': 'ensembl'})
 
         # RelationshipSets
-        self.gene_codes_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript'], ['sid'], ['sid'])
-        self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'])
+        self.gene_codes_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript'], ['sid'], ['sid'], default_props={'source': 'ensembl'})
+        self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'], default_props={'source': 'ensembl'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -58,8 +58,7 @@ class EnsemblEntityParser(ReturnParser):
             # add gene node
             gene_id = r.attributes['gene_id']
             if gene_id not in check_gene_ids:
-                props = {'sid': gene_id, 'name': r.attributes['gene_name'], 'taxid': taxid,
-                         'source': datasource_name}
+                props = {'sid': gene_id, 'name': r.attributes['gene_name'], 'taxid': taxid}
 
                 self.genes.add_node(props)
                 check_gene_ids.add(gene_id)
@@ -68,7 +67,7 @@ class EnsemblEntityParser(ReturnParser):
             if r.type == 'transcript':
                 transcript_id = r.attributes['transcript_id']
                 if transcript_id not in check_transcript_ids:
-                    props = {'sid': transcript_id, 'source': datasource_name, 'taxid': taxid}
+                    props = {'sid': transcript_id, 'taxid': taxid}
 
                     self.transcripts.add_node(props)
                     check_transcript_ids.add(transcript_id)
@@ -77,7 +76,7 @@ class EnsemblEntityParser(ReturnParser):
             if r.type == 'CDS':
                 protein_id = r.attributes['protein_id']
                 if protein_id not in check_protein_ids:
-                    props = {'sid': protein_id, 'source': datasource_name, 'taxid': taxid}
+                    props = {'sid': protein_id, 'taxid': taxid}
 
                     self.proteins.add_node(props)
                     check_protein_ids.add(protein_id)
@@ -90,7 +89,7 @@ class EnsemblEntityParser(ReturnParser):
                 # add gene-transcript rel
                 if gene_id + transcript_id not in check_gene_transcript_rels:
                     self.gene_codes_transcript.add_relationship({'sid': gene_id}, {'sid': transcript_id},
-                                                                {'source': datasource_name})
+                                                                {})
                     check_gene_transcript_rels.add(gene_id + transcript_id)
 
             # Transcript-CODES-Protein
@@ -101,7 +100,7 @@ class EnsemblEntityParser(ReturnParser):
                 # add transcript-protein rel
                 if transcript_id + protein_id not in check_transcript_protein_rels:
                     self.transcript_codes_protein.add_relationship({'sid': transcript_id}, {'sid': protein_id},
-                                                                   {'source': datasource_name})
+                                                                   {})
                     check_transcript_protein_rels.add(transcript_id + protein_id)
 
         log.info("Finished parsing ENSEMBL gtf file.")
@@ -120,10 +119,7 @@ class EnsemblLocusParser(ReturnParser):
         self.arguments = ['taxid']
 
         # NodeSets
-        self.locus = NodeSet(['Locus'], merge_keys=['uuid'])
-
-        self.object_sets = [self.locus]
-        self.container.add_all(self.object_sets)
+        self.locus = NodeSet(['Locus'], merge_keys=['uuid'], default_props={'source': 'ensembl'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -142,7 +138,7 @@ class EnsemblLocusParser(ReturnParser):
             # one line is one unique Locus
             props = {'chr': r.chr, 'annotation_source': r.source, 'start': int(r.start), 'end': int(r.end),
                      'type': r.type, 'score': r.score, 'strand': r.strand, 'frame': r.frame,
-                     'source': datasource_name, 'taxid': taxid, 'ref': 'h38', 'uuid': str(uuid4())}
+                     'taxid': taxid, 'ref': 'h38', 'uuid': str(uuid4())}
             props.update(r.attributes)
 
             self.locus.add_node(props)
@@ -197,12 +193,9 @@ class EnsemblMappingParser(ReturnParser):
         self.arguments = ['taxid']
 
         # define NodeSet and RelationshipSet
-        self.gene_maps_gene = RelationshipSet('MAPS', ['Gene'], ['Gene'], ['sid'], ['sid'])
-        self.transcript_maps_transcript = RelationshipSet('MAPS', ['Transcript'], ['Transcript'], ['sid'], ['sid'])
-        self.protein_maps_protein = RelationshipSet('MAPS', ['Protein'], ['Protein'], ['sid'], ['sid'])
-
-        self.object_sets = [self.gene_maps_gene, self.transcript_maps_transcript, self.protein_maps_protein]
-        self.container.add_all(self.object_sets)
+        self.gene_maps_gene = RelationshipSet('MAPS', ['Gene'], ['Gene'], ['sid'], ['sid'], default_props={'source': 'ensembl'})
+        self.transcript_maps_transcript = RelationshipSet('MAPS', ['Transcript'], ['Transcript'], ['sid'], ['sid'], default_props={'source': 'ensembl'})
+        self.protein_maps_protein = RelationshipSet('MAPS', ['Protein'], ['Protein'], ['sid'], ['sid'], default_props={'source': 'ensembl'})
 
     # define properties that are used in multiple parsing functions
     @property
@@ -231,7 +224,7 @@ class EnsemblMappingParser(ReturnParser):
 
                 if frozenset([ensembl_gene_id, ncbi_gene_id]) not in check_rels:
                     self.gene_maps_gene.add_relationship({'sid': ensembl_gene_id}, {'sid': ncbi_gene_id},
-                                                         {'source': self.datasource_name})
+                                                         {})
                     check_rels.add(frozenset([ensembl_gene_id, ncbi_gene_id]))
 
     def run_transcript(self, taxid):
@@ -256,7 +249,7 @@ class EnsemblMappingParser(ReturnParser):
                         self.transcript_maps_transcript.add_relationship(
                             {'sid': ensembl_transcript_id},
                             {'sid': xref_id},
-                            {'source': self.datasource_name}
+                            {}
                         )
 
                         check_rels.add(frozenset([ensembl_transcript_id, xref_id]))
@@ -277,7 +270,7 @@ class EnsemblMappingParser(ReturnParser):
                 if frozenset([ensembl_protein_id, xref_id]) not in check_rels:
                     self.protein_maps_protein.add_relationship(
                         {'sid': ensembl_protein_id}, {'sid': xref_id},
-                        {'source': 'ensembl', 'taxid': self.taxid}
+                        {'taxid': self.taxid}
                     )
 
                     check_rels.add(frozenset([ensembl_protein_id, xref_id]))

@@ -34,8 +34,8 @@ class RefseqEntityParser(ReturnParser):
         self.arguments = ['taxid']
 
         # define NodeSet and RelationshipSet
-        self.transcripts = NodeSet(['Transcript'], merge_keys=['sid'])
-        self.proteins = NodeSet(['Protein'], merge_keys=['sid'])
+        self.transcripts = NodeSet(['Transcript'], merge_keys=['sid'], default_props={'source': 'refseq'})
+        self.proteins = NodeSet(['Protein'], merge_keys=['sid'], default_props={'source': 'refseq'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -71,7 +71,7 @@ class RefseqEntityParser(ReturnParser):
                                 self.transcripts.add_node(
                                     {'sid': refseq_acc, 'version': version, 'status': status,
                                      'length': length,
-                                     'source': datasource_name, 'taxid': taxid}
+                                     'taxid': taxid}
                                 )
 
                                 check_transcripts.add(refseq_acc)
@@ -81,7 +81,7 @@ class RefseqEntityParser(ReturnParser):
                                 self.proteins.add_node(
                                     {'sid': refseq_acc, 'version': version, 'status': status,
                                      'length': length,
-                                     'source': datasource_name, 'taxid': taxid})
+                                     'taxid': taxid})
                                 check_proteins.add(refseq_acc)
 
 
@@ -101,14 +101,14 @@ class RefseqRemovedRecordsParser(ReturnParser):
 
         self.legacy_ids = set()
 
-        self.legacy_transcripts = NodeSet(['Transcript', 'Legacy'], merge_keys=['sid'])
-        self.legacy_transcript_now_transcript = RelationshipSet('REPLACED_BY', ['Transcript'], ['Transcript'], ['sid'], ['sid'])
-        self.legacy_proteins = NodeSet(['Protein', 'Legacy'], merge_keys=['sid'])
+        self.legacy_transcripts = NodeSet(['Transcript', 'Legacy'], merge_keys=['sid'], default_props={'source': 'refseq'})
+        self.legacy_transcript_now_transcript = RelationshipSet('REPLACED_BY', ['Transcript'], ['Transcript'], ['sid'], ['sid'], default_props={'source': 'refseq'})
+        self.legacy_proteins = NodeSet(['Protein', 'Legacy'], merge_keys=['sid'], default_props={'source': 'refseq'})
         self.legacy_protein_now_protein = RelationshipSet('REPLACED_BY', ['Protein'], ['Protein'],
-                                                                ['sid'], ['sid'])
-        self.gene_codes_legacy_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript', 'Legacy'], ['sid'], ['sid'])
+                                                                ['sid'], ['sid'], default_props={'source': 'refseq'})
+        self.gene_codes_legacy_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript', 'Legacy'], ['sid'], ['sid'], default_props={'source': 'refseq'})
         self.legacy_transcript_codes_protein = RelationshipSet('CODES', ['Transcript', 'Legacy'], ['Protein'],
-                                                               ['sid'], ['sid'])
+                                                               ['sid'], ['sid'], default_props={'source': 'refseq'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -185,7 +185,7 @@ class RefseqRemovedRecordsParser(ReturnParser):
                                 self.legacy_transcripts.add_node(
                                     {'sid': refseq_acc, 'version': version,
                                      'status': 'removed', 'removed_in': release, 'reason': reason,
-                                     'source': refseq_instance.datasource.name, 'taxid': taxid}
+                                     'taxid': taxid}
                                 )
 
                                 self.legacy_ids.add(refseq_acc)
@@ -202,7 +202,7 @@ class RefseqRemovedRecordsParser(ReturnParser):
                                 self.legacy_proteins.add_node(
                                     {'sid': refseq_acc, 'version': version,
                                      'status': 'removed', 'removed_in': release, 'reason': reason,
-                                     'source': refseq_instance.datasource.name, 'taxid': taxid})
+                                     'taxid': taxid})
                                 self.legacy_ids.add(refseq_acc)
 
                                 if 'replaced by' in reason:
@@ -301,8 +301,8 @@ class RefseqCodesParser(ReturnParser):
         self.arguments = ['taxid']
 
         # define NodeSet and RelationshipSet
-        self.gene_codes_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript'], ['sid'], ['sid'])
-        self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'])
+        self.gene_codes_transcript = RelationshipSet('CODES', ['Gene'], ['Transcript'], ['sid'], ['sid'], default_props={'source': 'refseq'})
+        self.transcript_codes_protein = RelationshipSet('CODES', ['Transcript'], ['Protein'], ['sid'], ['sid'], default_props={'source': 'refseq'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -333,7 +333,7 @@ class RefseqCodesParser(ReturnParser):
                     if gene_id + transcript_id not in check_g_t_rels:
                         self.gene_codes_transcript.add_relationship(
                             {'sid': gene_id}, {'sid': transcript_id},
-                            {'source': datasource_name, 'taxid': taxid}
+                            {'taxid': taxid}
                         )
                         check_g_t_rels.add(gene_id + transcript_id)
 
@@ -344,7 +344,7 @@ class RefseqCodesParser(ReturnParser):
                             self.transcript_codes_protein.add_relationship(
                                 {'sid': transcript_id},
                                 {'sid': protein_id},
-                                {'source': datasource_name, 'taxid': taxid}
+                                {'taxid': taxid}
                             )
 
                             check_t_p_rels.add(transcript_id + protein_id)

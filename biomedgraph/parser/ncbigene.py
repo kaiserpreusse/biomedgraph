@@ -23,11 +23,11 @@ class NcbiGeneParser(ReturnParser):
         # output data
         # both gene IDs and GeneSymbols have the label 'Gene'
         # two different NodeSets are used because only the GeneSymbol nodes need taxid for uniqueness
-        self.genes = NodeSet(['Gene'], merge_keys=['sid'])
-        self.genesymbols = NodeSet(['Gene'], merge_keys=['sid', 'taxid'])
+        self.genes = NodeSet(['Gene'], merge_keys=['sid'], default_props={'source': 'ncbigene'})
+        self.genesymbols = NodeSet(['Gene'], merge_keys=['sid', 'taxid'], default_props={'source': 'ncbigene'})
         self.genesymbol_synonym_genesymbol = RelationshipSet('SYNONYM', ['Gene'], ['Gene'],
-                                                             ['sid', 'taxid'], ['sid', 'taxid'])
-        self.gene_maps_genesymbol = RelationshipSet('MAPS', ['Gene'], ['Gene'], ['sid'], ['sid', 'taxid'])
+                                                             ['sid', 'taxid'], ['sid', 'taxid'], default_props={'source': 'ncbigene'})
+        self.gene_maps_genesymbol = RelationshipSet('MAPS', ['Gene'], ['Gene'], ['sid'], ['sid', 'taxid'], default_props={'source': 'ncbigene'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -74,7 +74,7 @@ class NcbiGeneParser(ReturnParser):
                     # (Gene)
                     entrez_gene_id = flds[1]
                     if entrez_gene_id not in check_ids:
-                        props = {'sid': entrez_gene_id, 'source': 'ncbigene'}
+                        props = {'sid': entrez_gene_id, 'taxid': taxid}
                         # update with all fields
                         props.update(
                             zip(header_fields, flds)
@@ -98,7 +98,7 @@ class NcbiGeneParser(ReturnParser):
                         self.genesymbol_synonym_genesymbol.add_relationship({'sid': synonym, 'taxid': taxid},
                                                                             {'sid': primary_symbol,
                                                                              'taxid': taxid},
-                                                                            {'source': 'ncbigene'})
+                                                                            {})
 
                         if synonym not in check_ids_symbols and synonym != '-':
                             check_ids_symbols.add(synonym)
@@ -110,12 +110,12 @@ class NcbiGeneParser(ReturnParser):
                     # primary
                     self.gene_maps_genesymbol.add_relationship({'sid': entrez_gene_id},
                                                                {'sid': primary_symbol, 'taxid': taxid},
-                                                               {'source': 'ncbigene', 'status': 'primary'})
+                                                               {'status': 'primary'})
                     # synonym
                     for symbol in synonym_symbols:
                         self.gene_maps_genesymbol.add_relationship({'sid': entrez_gene_id},
                                                                    {'sid': symbol, 'taxid': taxid},
-                                                                   {'source': 'ncbigene', 'status': 'synonym'})
+                                                                   {'status': 'synonym'})
 
 class NcbiLegacyGeneParser(ReturnParser):
     """
@@ -132,8 +132,8 @@ class NcbiLegacyGeneParser(ReturnParser):
 
         self.arguments = ['taxid']
 
-        self.legacy_genes = NodeSet(['Gene', 'Legacy'], merge_keys=['sid'])
-        self.legacy_gene_now_gene = RelationshipSet('REPLACED_BY', ['Gene', 'Legacy'], ['Gene'], ['sid'], ['sid'])
+        self.legacy_genes = NodeSet(['Gene', 'Legacy'], merge_keys=['sid'], default_props={'source': 'ncbigene'})
+        self.legacy_gene_now_gene = RelationshipSet('REPLACED_BY', ['Gene', 'Legacy'], ['Gene'], ['sid'], ['sid'], default_props={'source': 'ncbigene'})
 
     def run_with_mounted_arguments(self):
         self.run(self.taxid)
@@ -155,7 +155,7 @@ class NcbiLegacyGeneParser(ReturnParser):
                     discontinued_symbol = flds[3]
                     date = flds[4]
                     self.legacy_genes.add_node(
-                        {'sid': discontinued_gene_id, 'date': date, 'symbol': discontinued_symbol}
+                        {'sid': discontinued_gene_id, 'date': date, 'symbol': discontinued_symbol, 'taxid': taxid}
                     )
                     if new_gene_id != '-':
                         self.legacy_gene_now_gene.add_relationship(
