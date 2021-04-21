@@ -62,7 +62,7 @@ class OboFoundryParser(ReturnParser):
 
         # construct Ontology node
         ontology_sid = metadata.ontology
-        ontology_dict = {'sid': ontology_sid, 'date': metadata.date, 'version': metadata.data_version}
+        ontology_dict = {'sid': ontology_sid, 'date': str(metadata.date), 'version': metadata.data_version}
         for annotation in metadata.annotations:
             property = annotation.property
 
