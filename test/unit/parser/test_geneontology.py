@@ -69,27 +69,27 @@ UniProtKB	A0A075B5J0	Trbv26		GO:0005886	PMID:21873635	IBA	MGI:MGI:98596|PANTHER:
     return filename
 
 
-class TestGeneOntologyAssociationParser:
-
-    def test_gaf_parser_human(self, gaf_file):
-
-        parser = GeneOntologyAssociationParser()
-
-        parser.parse_goa_uniprot_gaf_file(gaf_file, '9606')
-
-        assert len(parser.protein_associates_goterm.relationships) == 25
-
-        for rel in parser.protein_associates_goterm.relationships:
-            assert type(rel.start_node_properties['sid']) is str
-            assert 'GO' in rel.end_node_properties['sid']
-
-    def test_gaf_parser_mouse(self, gaf_file):
-        parser = GeneOntologyAssociationParser()
-
-        parser.parse_goa_uniprot_gaf_file(gaf_file, '10090')
-
-        assert len(parser.protein_associates_goterm.relationships) == 10
-
-        for rel in parser.protein_associates_goterm.relationships:
-            assert type(rel.start_node_properties['sid']) is str
-            assert 'GO' in rel.end_node_properties['sid']
+# class TestGeneOntologyAssociationParser:
+#
+#     def test_gaf_parser_human(self, gaf_file):
+#
+#         parser = GeneOntologyAssociationParser()
+#
+#         parser.parse_goa_uniprot_gaf_file(gaf_file, '9606')
+#
+#         assert len(parser.protein_associates_goterm.relationships) == 25
+#
+#         for rel in parser.protein_associates_goterm.relationships:
+#             assert type(rel.start_node_properties['sid']) is str
+#             assert 'GO' in rel.end_node_properties['sid']
+#
+#     def test_gaf_parser_mouse(self, gaf_file):
+#         parser = GeneOntologyAssociationParser()
+#
+#         parser.parse_goa_uniprot_gaf_file(gaf_file, '10090')
+#
+#         assert len(parser.protein_associates_goterm.relationships) == 10
+#
+#         for rel in parser.protein_associates_goterm.relationships:
+#             assert type(rel.start_node_properties['sid']) is str
+#             assert 'GO' in rel.end_node_properties['sid']
