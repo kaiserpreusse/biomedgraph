@@ -1,11 +1,12 @@
 from datetime import datetime
 
-from graphpipeline.datasource import SingleVersionRemoteDataSource
+from graphpipeline.datasource import RollingReleaseRemoteDataSource
 from graphpipeline.datasource import DataSourceInstance
+from graphpipeline.datasource.datasourceversion import DataSourceVersion
 from graphpipeline.datasource.helper import downloader
 
 
-class NcbiHomoloGene(SingleVersionRemoteDataSource):
+class NcbiHomoloGene(RollingReleaseRemoteDataSource):
     """
     NCBI HomoloGene is a database that contains groups of homologous genes. The homology is calculated
     based on protein sequences of the latest genome releases. The protein alignments are mapped back to
@@ -38,6 +39,9 @@ class NcbiHomoloGene(SingleVersionRemoteDataSource):
         :type root_dir: str
         """
         super(NcbiHomoloGene, self).__init__(root_dir)
+
+    def latest_remote_version(self):
+        return DataSourceVersion(68)
 
     def download_function(self, instance, version):
         downloader.download_file_to_dir(
