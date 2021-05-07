@@ -51,6 +51,9 @@ class Ensembl(ManyVersionsRemoteDataSource):
         :type root_dir: str
         """
         super(Ensembl, self).__init__(root_dir)
+        self.arguments = ['taxids']
+        self.argument_types = {'taxids': 'list'}
+        self.allowed_values = {'taxids': ['9606', '10090']}
 
         self.remote_gtf_urls = {}
 
