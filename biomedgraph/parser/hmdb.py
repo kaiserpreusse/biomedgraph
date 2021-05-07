@@ -13,11 +13,11 @@ class HmdbParser(ReturnParser):
         super(HmdbParser, self).__init__()
 
         # NodeSets
-        self.metabolites = NodeSet(['Metabolite'], merge_keys=['sid'])
+        self.metabolites = NodeSet(['Metabolite'], merge_keys=['sid'], default_props={'source': 'hmdb'})
 
-        self.metabolite_map_metabolite = RelationshipSet('MAPS', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'])
+        self.metabolite_map_metabolite = RelationshipSet('MAPS', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'], default_props={'source': 'hmdb'})
         self.metabolite_associates_protein = RelationshipSet('HAS_ASSOCIATION', ['Metabolite'], ['Protein'], ['sid'],
-                                                             ['sid'])
+                                                             ['sid'], default_props={'source': 'hmdb'})
 
     def run_with_mounted_arguments(self):
         self.run()
@@ -60,8 +60,7 @@ class HmdbParser(ReturnParser):
                 'cas_registry_number': cas_registry_number,
                 'smiles': smiles,
                 'inchi': inchi,
-                'kegg_id': kegg_id,
-                'source': 'hmdb'
+                'kegg_id': kegg_id
             }
 
             self.metabolites.add_node(metabolite_properties)
@@ -69,12 +68,12 @@ class HmdbParser(ReturnParser):
             # add mapping to Chebi
             if chebi_id:
                 self.metabolite_map_metabolite.add_relationship(
-                    {'sid': sid}, {'sid': chebi_id}, {'source': 'hmdb'}
+                    {'sid': sid}, {'sid': chebi_id}, {}
                 )
 
             # add association to Proteins
             for protein in metabolite.find('{http://www.hmdb.ca}protein_associations'):
                 uniprot_id = protein.findtext('{http://www.hmdb.ca}uniprot_id')
                 self.metabolite_associates_protein.add_relationship(
-                    {'sid': sid}, {'sid': uniprot_id}, {'source': 'hmdb'}
+                    {'sid': sid}, {'sid': uniprot_id}, {}
                 )

@@ -17,10 +17,10 @@ class ChebiParser(ReturnParser):
         super(ChebiParser, self).__init__()
 
         # NodeSets
-        self.metabolites = NodeSet(['Metabolite'], merge_keys=['sid'])
-        self.metabolite_isa_metabolite = RelationshipSet('IS_A', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'])
-        self.metabolite_rel_metabolite = RelationshipSet('CHEBI_REL', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'])
-        self.metabolite_maps_metabolite = RelationshipSet('MAPS', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'])
+        self.metabolites = NodeSet(['Metabolite'], merge_keys=['sid'], default_props={'source': 'chebi'})
+        self.metabolite_isa_metabolite = RelationshipSet('IS_A', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'], default_props={'source': 'chebi'})
+        self.metabolite_rel_metabolite = RelationshipSet('CHEBI_REL', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'], default_props={'source': 'chebi'})
+        self.metabolite_maps_metabolite = RelationshipSet('MAPS', ['Metabolite'], ['Metabolite'], ['sid'], ['sid'], default_props={'source': 'chebi'})
 
     def run_with_mounted_arguments(self):
         self.run()
@@ -43,12 +43,12 @@ class ChebiParser(ReturnParser):
             ontology_id = term.id
             self.metabolites.add_node(
                 {'name': (term.name), 'sid': term_sid, 'ontology_id': ontology_id,
-                 'definition': term.definition, 'alt_ids': list(term.alternate_ids), 'source': 'chebi'}
+                 'definition': term.definition, 'alt_ids': list(term.alternate_ids)}
             )
 
             for parent in term.superclasses(distance=1, with_self=False):
                 self.metabolite_isa_metabolite.add_relationship(
-                    {'sid': term_sid}, {'sid': parent.id}, {'source': 'chebi'}
+                    {'sid': term_sid}, {'sid': parent.id}, {}
                 )
 
             ## other named relationships
@@ -57,7 +57,7 @@ class ChebiParser(ReturnParser):
 
                     for target in targets:
                         self.metabolite_rel_metabolite.add_relationship(
-                            {'sid': term_sid}, {'sid': target.id}, {'source': 'chebi', 'type': reltype.id})
+                            {'sid': term_sid}, {'sid': target.id}, {'type': reltype.id})
             except KeyError as e:
                 log.error(f"Cannot iterate relationshis of term {term_sid}")
                 log.error(e)
@@ -67,5 +67,5 @@ class ChebiParser(ReturnParser):
                 if 'HMDB:' in xref.id:
                     hmdb_id = xref.id.strip().split('HMDB:')[1]
                     self.metabolite_maps_metabolite.add_relationship(
-                        {'sid': term_sid}, {'sid': hmdb_id}, {'source': 'chebi'}
+                        {'sid': term_sid}, {'sid': hmdb_id}, {}
                     )
