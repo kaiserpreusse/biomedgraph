@@ -24,7 +24,7 @@ class NcbiGeneParser(ReturnParser):
         # both gene IDs and GeneSymbols have the label 'Gene'
         # two different NodeSets are used because only the GeneSymbol nodes need taxid for uniqueness
         self.genes = NodeSet(['Gene'], merge_keys=['sid'], default_props={'source': 'ncbigene'})
-        self.genesymbols = NodeSet(['Gene'], merge_keys=['sid', 'taxid'], default_props={'source': 'ncbigene'})
+        self.genesymbols = NodeSet(['Gene'], merge_keys=['sid', 'taxid'], default_props={'source': 'ncbigene', 'type': 'symbol'})
         self.genesymbol_synonym_genesymbol = RelationshipSet('SYNONYM', ['Gene'], ['Gene'],
                                                              ['sid', 'taxid'], ['sid', 'taxid'], default_props={'source': 'ncbigene'})
         self.gene_maps_genesymbol = RelationshipSet('MAPS', ['Gene'], ['Gene'], ['sid'], ['sid', 'taxid'], default_props={'source': 'ncbigene'})
