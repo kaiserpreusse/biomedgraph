@@ -100,30 +100,19 @@ class ResultSet:
                 rs.create_index(graph)
                 rs.merge(graph)
 
-
+        # alternative ways to iterate the anndata object
 
         # for obs_name in self._data.obs_names:
         #     log.debug(f"Parse {obs_name}")
         #     results.add_node({self.observation.name: obs_name})
         #
         #     for feature, value in zip(self._data.var_names, self._data[obs_name].X[0]):
-        #         # log.debug(f"obs_name: {obs_name}, feature: {feature}, value: {value}")
-        #         measurement_uid = str(uuid4())
-        #         measurements.add_node({self.measurement.uid: measurement_uid, 'value': float(value)})
-        #         result_to_measurement.add_relationship({self.observation.name: obs_name}, {self.measurement.uid: measurement_uid},
-        #                                                {})
-        #         measurement_to_target_data.add_relationship({self.measurement.uid: measurement_uid},
-        #                                                     {target_property: feature}, {})
-
-            # for feature, obs in self._data[obs_name].to_df().iteritems():
-            #     value = obs[0]
-            #     # log.debug(f"obs_name: {obs_name}, feature: {feature}, value: {value}")
-            #     measurement_uid = str(uuid4())
-            #     measurements.add_node({self.measurement.uid: measurement_uid, 'value': float(value)})
-            #     result_to_measurement.add_relationship({self.observation.name: obs_name}, {self.measurement.uid: measurement_uid},
-            #                                            {})
-            #     measurement_to_target_data.add_relationship({self.measurement.uid: measurement_uid},
-            #                                                 {target_property: feature}, {})
+        #       ...
+        #
+        # or in inner loop
+        #
+        #     for feature, obs in self._data[obs_name].to_df().iteritems():
+        #         ...
 
     def load(self, graph):
         """
