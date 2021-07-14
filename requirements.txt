@@ -8,4 +8,4 @@ pronto
 lxml
 graphpipeline
 webdavclient3
-anndata
+click

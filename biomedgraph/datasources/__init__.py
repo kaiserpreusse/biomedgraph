@@ -21,7 +21,8 @@ from .hmdb import Hmdb
 from .lncipedia import Lncipedia
 from graphpipeline.datasource import BaseDataSource
 
-# current_module = sys.modules[__name__]
-#
-# ALL_DATASOURCES = dict([(name, cls) for name, cls in inspect.getmembers(current_module, inspect.isclass) if
-#                         issubclass(cls, BaseDataSource) and cls.__name__ != BaseDataSource.__name__])
+import sys
+import inspect
+current_module = sys.modules[__name__]
+ALL_DATASOURCES = dict([(name, cls) for name, cls in inspect.getmembers(current_module, inspect.isclass) if
+                        issubclass(cls, BaseDataSource) and cls.__name__ != BaseDataSource.__name__])

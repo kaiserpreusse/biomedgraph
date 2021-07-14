@@ -15,7 +15,7 @@ setup(name='biomedgraph',
       packages=find_packages(),
       install_requires=[
           'urllib3', 'pandas', 'xlrd', 'requests', 'ftputil',
-          'psycopg2-binary', 'pronto', 'graphio>=0.1.0', 'graphpipeline', 'lxml', 'anndata'
+          'psycopg2-binary', 'pronto', 'graphio>=0.1.0', 'graphpipeline', 'lxml', 'click'
       ],
       keywords=['NEO4J', 'Biology'],
       zip_safe=False,
